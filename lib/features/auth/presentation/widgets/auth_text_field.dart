@@ -6,12 +6,19 @@ class AuthTextField extends StatelessWidget {
     required this.title,
     required this.hintText,
     this.icon,
+    required this.controller,
+    required this.validator,
+    this.onEditingComplete,
+    this.focusNode,
   });
 
   final String title;
   final String hintText;
   final IconData? icon;
-
+  final TextEditingController controller;
+  final String? Function(String?)? validator;
+  final void Function()? onEditingComplete;
+  final FocusNode? focusNode;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -28,6 +35,10 @@ class AuthTextField extends StatelessWidget {
           height: 5,
         ),
         TextFormField(
+          controller: controller,
+          validator: validator,
+          onEditingComplete: onEditingComplete,
+          focusNode: focusNode,
           decoration: InputDecoration(
             hintText: hintText,
             suffixIcon: Icon(icon),

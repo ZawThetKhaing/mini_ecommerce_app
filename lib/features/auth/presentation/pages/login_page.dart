@@ -1,38 +1,29 @@
 import 'package:flutter/material.dart';
-import 'package:mini_ecommerce_app_assignment/core/command/sign_up_command.dart';
+import 'package:mini_ecommerce_app_assignment/core/command/login_command.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/presentation/provider/auth_provider.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/presentation/widgets/auth_text_field.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
-class SignUpPage extends StatefulWidget {
-  const SignUpPage({super.key});
+class LoginPage extends StatefulWidget {
+  const LoginPage({super.key});
 
   @override
-  State<SignUpPage> createState() => _SignUpPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _SignUpPageState extends State<SignUpPage> {
-  final TextEditingController _userNameController = TextEditingController();
+class _LoginPageState extends State<LoginPage> {
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final TextEditingController _confrimPasswordController =
-      TextEditingController();
 
-  final FocusNode _emailFocusNode = FocusNode();
   final FocusNode _passwordFocusNode = FocusNode();
-  final FocusNode _confrimPasswordFocusNode = FocusNode();
 
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
   @override
   void dispose() {
-    _userNameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
-    _confrimPasswordController.dispose();
-    _emailFocusNode.dispose();
     _passwordFocusNode.dispose();
-    _confrimPasswordFocusNode.dispose();
     formKey.currentState?.dispose();
     super.dispose();
   }
@@ -54,31 +45,22 @@ class _SignUpPageState extends State<SignUpPage> {
             ),
             children: [
               Text(
-                "Create an account",
+                "Welcome back.",
                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                       fontWeight: FontWeight.bold,
                     ),
               ),
               Text(
-                "Let's create your account.",
+                "Let's login for fantastic experience.",
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(
                 height: 12,
               ),
               AuthTextField(
-                title: "Full Name",
-                hintText: "Enter your full name",
-                controller: _userNameController,
-                validator: (value) =>
-                    value == null || value.isEmpty ? "Required" : null,
-                onEditingComplete: _emailFocusNode.requestFocus,
-              ),
-              AuthTextField(
                 title: 'Email',
                 hintText: "Enter your email address",
                 controller: _emailController,
-                focusNode: _emailFocusNode,
                 validator: (value) =>
                     value == null || value.isEmpty ? "Required" : null,
                 onEditingComplete: _passwordFocusNode.requestFocus,
@@ -90,18 +72,6 @@ class _SignUpPageState extends State<SignUpPage> {
                 focusNode: _passwordFocusNode,
                 validator: (value) =>
                     value == null || value.isEmpty ? "Required" : null,
-                onEditingComplete: _confrimPasswordFocusNode.requestFocus,
-              ),
-              AuthTextField(
-                title: "Confirm Password",
-                hintText: "Please enter password again",
-                controller: _confrimPasswordController,
-                focusNode: _confrimPasswordFocusNode,
-                validator: (value) => value != _passwordController.text
-                    ? "Password does not match"
-                    : value?.isEmpty == true
-                        ? "Required"
-                        : null,
               ),
               const SizedBox(
                 height: 24,
@@ -109,22 +79,21 @@ class _SignUpPageState extends State<SignUpPage> {
               ElevatedButton(
                 onPressed: () async {
                   if (formKey.currentState?.validate() != true) return;
-                  final signUpCommand = SignUpCommand(
+                  final loginCommand = LoginCommand(
                     email: _emailController.text,
-                    name: _userNameController.text,
                     password: _passwordController.text,
                   );
                   final isSuccess =
-                      await authProvider.signUpwithEmail(signUpCommand);
+                      await authProvider.loginWithEmail(loginCommand);
                   if (isSuccess) {
                     if (!context.mounted) return;
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil('/home', (route) => false);
                   } else {
-                    print("Register Failed");
+                    print("Login Failed");
                   }
                 },
-                child: const Text("Sign Up"),
+                child: const Text("Login"),
               ),
               const Padding(
                 padding: EdgeInsets.symmetric(
@@ -166,10 +135,10 @@ class _SignUpPageState extends State<SignUpPage> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
-                    "Already a member?",
+                    "Create a new account.",
                   ),
                   Text(
-                    "Log In",
+                    "Sign Up",
                     style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                           fontWeight: FontWeight.w600,
                           color: Colors.black,
