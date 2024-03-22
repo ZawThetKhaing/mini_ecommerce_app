@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/presentation/pages/login_page.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/presentation/provider/auth_provider.dart';
-import 'package:mini_ecommerce_app_assignment/features/others/pages/home.dart';
+import 'package:mini_ecommerce_app_assignment/features/others/pages/home_page.dart';
 import 'package:provider/provider.dart';
 
 class WrapperPage extends StatelessWidget {
@@ -13,7 +13,6 @@ class WrapperPage extends StatelessWidget {
       body: Center(
         child: Consumer<AuthProvider>(
           builder: (context, provider, _) {
-            print(provider.authStatus);
             switch (provider.authStatus) {
               case AuthStatus.authenticated:
                 return const HomePage();

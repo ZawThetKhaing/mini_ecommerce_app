@@ -2,12 +2,11 @@ import 'dart:async';
 
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:mini_ecommerce_app_assignment/core/routes/route_config.dart';
 import 'package:mini_ecommerce_app_assignment/core/theme/app_theme.dart';
-import 'package:mini_ecommerce_app_assignment/features/auth/presentation/pages/login_page.dart';
-import 'package:mini_ecommerce_app_assignment/features/auth/presentation/pages/sign_up_page.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/presentation/provider/auth_provider.dart';
-import 'package:mini_ecommerce_app_assignment/features/others/pages/home.dart';
-import 'package:mini_ecommerce_app_assignment/features/others/pages/wrapper.dart';
+import 'package:mini_ecommerce_app_assignment/features/others/providers/home_nav_provider.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/presentation/providers/get_product_provider.dart';
 import 'package:mini_ecommerce_app_assignment/firebase_options.dart';
 import 'package:mini_ecommerce_app_assignment/injection_container.dart';
 import 'package:provider/provider.dart';
@@ -17,9 +16,20 @@ Future<void> main() async {
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
 
   await init();
+
   runApp(
-    ChangeNotifierProvider(
-      create: (context) => sl<AuthProvider>()..authUser(),
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          create: (context) => sl<AuthProvider>()..authUser(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => sl<HomeNavProvider>(),
+        ),
+        ChangeNotifierProvider(
+          create: (context) => sl<GetProductsProvider>()..fetchAllProducts(),
+        ),
+      ],
       child: const MyApp(),
     ),
   );
@@ -33,14 +43,8 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Flutter Demo',
       theme: AppTheme.appTheme(context),
-      // home: const SignUpPage(),
       initialRoute: '/wrapper',
-      routes: {
-        '/home': (context) => HomePage(),
-        '/signUp': (context) => SignUpPage(),
-        '/login': (context) => LoginPage(),
-        '/wrapper': (context) => WrapperPage(),
-      },
+      onGenerateRoute: RouteConfig.onGenerateRoute,
     );
   }
 }
