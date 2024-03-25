@@ -1,7 +1,10 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:mini_ecommerce_app_assignment/core/routes/route_config.dart';
 import 'package:mini_ecommerce_app_assignment/features/product/data/models/product_model.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/presentation/providers/product_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
+import 'package:provider/provider.dart';
 
 class ProductDetail extends StatelessWidget {
   final ProductModel model;
@@ -12,6 +15,7 @@ class ProductDetail extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final provider = context.read<ProductsProvider>();
     return Scaffold(
       appBar: AppBar(
         leading: IconButton(
@@ -29,8 +33,12 @@ class ProductDetail extends StatelessWidget {
         ),
         actions: [
           IconButton(
-              onPressed: () {},
-              icon: const PhosphorIcon(PhosphorIconsRegular.bell)),
+            onPressed: () {
+              Navigator.of(context)
+                  .pushNamed(RouteConfig.cart, arguments: true);
+            },
+            icon: const PhosphorIcon(PhosphorIconsRegular.shoppingCart),
+          ),
         ],
       ),
       body: ListView(
@@ -55,11 +63,11 @@ class ProductDetail extends StatelessWidget {
             height: 4,
           ),
           Text(
-            "${model.rating.count} Remaining Instocks",
+            "${model.count} Remaining Instocks",
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           Text(
-            "Rating : ${model.rating.rate} %",
+            "Rating : ${model.rate} %",
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           const SizedBox(
@@ -94,7 +102,16 @@ class ProductDetail extends StatelessWidget {
         ],
       ),
       floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {},
+        onPressed: () {
+          provider.addToCart(model).whenComplete(
+                () => ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    duration: Durations.medium2,
+                    content: Text("Add to cart successfully!"),
+                  ),
+                ),
+              );
+        },
         elevation: 0,
         backgroundColor: Colors.black,
         foregroundColor: Colors.white,

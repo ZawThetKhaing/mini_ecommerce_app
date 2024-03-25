@@ -20,7 +20,8 @@ class ProductModel extends ProductEntity {
     required super.description,
     required super.category,
     required super.image,
-    required super.rating,
+    required super.rate,
+    required super.count,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
@@ -30,7 +31,8 @@ class ProductModel extends ProductEntity {
         description: json['description'],
         category: json['category'],
         image: json['image'],
-        rating: RatingModel.fromJson(json['rating'] as Map<String, dynamic>),
+        rate: (json['rating']['rate']).toString(),
+        count: (json['rating']['count']).toString(),
       );
 
   factory ProductModel.fromEntity(ProductEntity entity) => ProductModel(
@@ -40,7 +42,19 @@ class ProductModel extends ProductEntity {
         description: entity.description,
         category: entity.category,
         image: entity.image,
-        rating: entity.rating,
+        rate: entity.rate,
+        count: entity.count,
+      );
+
+  ProductEntity toEntity() => ProductEntity(
+        id: id,
+        title: title,
+        price: price,
+        description: description,
+        category: category,
+        image: image,
+        rate: rate,
+        count: count,
       );
 
   Map<String, dynamic> toJson() => {
@@ -50,23 +64,9 @@ class ProductModel extends ProductEntity {
         'description': description,
         'category': category,
         'image': image,
-        'rating': (rating as RatingModel).toJson(),
-      };
-}
-
-class RatingModel extends RatingEntity {
-  const RatingModel({
-    required super.rate,
-    required super.count,
-  });
-
-  factory RatingModel.fromJson(Map<String, dynamic> json) => RatingModel(
-        rate: (json['rate']).toString(),
-        count: (json['count']).toString(),
-      );
-
-  Map<String, dynamic> toJson() => {
-        'rate': rate,
-        'count': count,
+        'rating': {
+          'rate': rate,
+          'count': count,
+        },
       };
 }

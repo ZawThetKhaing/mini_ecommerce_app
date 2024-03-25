@@ -84,6 +84,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 onEditingComplete: _passwordFocusNode.requestFocus,
               ),
               AuthTextField(
+                obSecure: true,
                 title: "Password",
                 hintText: "Enter your password",
                 controller: _passwordController,
@@ -93,6 +94,7 @@ class _SignUpPageState extends State<SignUpPage> {
                 onEditingComplete: _confrimPasswordFocusNode.requestFocus,
               ),
               AuthTextField(
+                obSecure: true,
                 title: "Confirm Password",
                 hintText: "Please enter password again",
                 controller: _confrimPasswordController,

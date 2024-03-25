@@ -1,14 +1,20 @@
 import 'package:equatable/equatable.dart';
+import 'package:hive/hive.dart';
 
+part 'product_entity.g.dart';
+
+@HiveType(typeId: 0)
 class ProductResponseEntity extends Equatable {
   const ProductResponseEntity({required this.products});
 
+  @HiveField(0)
   final List<ProductEntity> products;
 
   @override
   List<Object?> get props => [products];
 }
 
+@HiveType(typeId: 1)
 class ProductEntity extends Equatable {
   const ProductEntity({
     required this.id,
@@ -17,27 +23,42 @@ class ProductEntity extends Equatable {
     required this.description,
     required this.category,
     required this.image,
-    required this.rating,
-  });
-
-  final String id;
-  final String title;
-  final String price;
-  final String description;
-  final String category;
-  final String image;
-  final RatingEntity rating;
-
-  @override
-  List<Object?> get props => [];
-}
-
-class RatingEntity {
-  const RatingEntity({
     required this.rate,
     required this.count,
   });
+  @HiveField(0)
+  final String id;
 
+  @HiveField(1)
+  final String title;
+
+  @HiveField(2)
+  final String price;
+
+  @HiveField(3)
+  final String description;
+
+  @HiveField(4)
+  final String category;
+
+  @HiveField(5)
+  final String image;
+
+  @HiveField(6)
   final String rate;
+
+  @HiveField(7)
   final String count;
+
+  @override
+  List<Object?> get props => [
+        id,
+        title,
+        price,
+        description,
+        category,
+        image,
+        rate,
+        count,
+      ];
 }

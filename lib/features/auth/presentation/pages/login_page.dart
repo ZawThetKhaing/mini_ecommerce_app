@@ -66,6 +66,7 @@ class _LoginPageState extends State<LoginPage> {
                 onEditingComplete: _passwordFocusNode.requestFocus,
               ),
               AuthTextField(
+                obSecure: true,
                 title: "Password",
                 hintText: "Enter your password",
                 controller: _passwordController,

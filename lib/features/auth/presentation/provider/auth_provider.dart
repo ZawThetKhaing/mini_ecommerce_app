@@ -25,7 +25,17 @@ class AuthProvider extends ChangeNotifier {
     required this.signUpUsecase,
     required this.authUserUsecase,
     required this.logoutUsecase,
-  });
+  }) {
+    _authSubScription = authUserUsecase().listen(
+      (event) {
+        if (event.id.isNotEmpty) {
+          _authStatus = AuthStatus.authenticated;
+          _user = UserModel.fromEntity(event);
+          notifyListeners();
+        }
+      },
+    );
+  }
   final LoginUsecase loginUsecase;
   final SignUpUsecase signUpUsecase;
   final AuthUserUsecase authUserUsecase;
@@ -86,18 +96,6 @@ class AuthProvider extends ChangeNotifier {
     _authStatus = AuthStatus.unauthenticated;
     _user = null;
     notifyListeners();
-  }
-
-  void authUser() {
-    _authSubScription = authUserUsecase().listen(
-      (event) {
-        if (event.id.isNotEmpty) {
-          _authStatus = AuthStatus.authenticated;
-          _user = UserModel.fromEntity(event);
-          notifyListeners();
-        }
-      },
-    );
   }
 
   @override

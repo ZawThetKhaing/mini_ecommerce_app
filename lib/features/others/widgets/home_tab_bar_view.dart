@@ -1,7 +1,6 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:mini_ecommerce_app_assignment/core/routes/route_config.dart';
-import 'package:mini_ecommerce_app_assignment/features/product/presentation/providers/get_product_provider.dart';
+import 'package:mini_ecommerce_app_assignment/features/others/widgets/product_card.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/presentation/providers/product_provider.dart';
 import 'package:provider/provider.dart';
 
 class HomeTabBarView extends StatefulWidget {
@@ -18,22 +17,20 @@ class HomeTabBarView extends StatefulWidget {
 class _HomeTabBarViewState extends State<HomeTabBarView>
     with SingleTickerProviderStateMixin {
   late TabController _tabController;
-  late GetProductsProvider provider;
+  late ProductsProvider provider;
 
   @override
   void initState() {
-    provider = context.read<GetProductsProvider>();
+    provider = context.read<ProductsProvider>();
     _tabController =
         TabController(length: widget.category.length + 1, vsync: this);
 
     _tabController.addListener(() {
       if (_tabController.indexIsChanging) {
-        if (_tabController.index == 0) {
-          return;
-        } else if (provider.productCategory != null) {
-          provider.filterByCategory(
-              provider.productCategory![_tabController.index - 1]);
-        }
+        _tabController.index == 0
+            ? provider.filterByCategory("All")
+            : provider.filterByCategory(
+                provider.productCategory![_tabController.index - 1]);
       }
     });
     super.initState();
@@ -90,108 +87,35 @@ class _HomeTabBarViewState extends State<HomeTabBarView>
             ),
           ),
         ),
+
         Expanded(
-          child: TabBarView(
-            physics: const NeverScrollableScrollPhysics(),
-            controller: _tabController,
-            children: [
-              /// All Products Items Grid View
-              GridView.builder(
-                itemCount: provider.allProducts.length,
-                gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                ),
-                itemBuilder: (_, i) {
-                  final product = provider.allProducts[i];
-
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pushNamed(
-                        RouteConfig.details,
-                        arguments: product,
-                      );
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 4, vertical: 8),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: CachedNetworkImage(
-                              imageUrl: product.image,
-                              fit: BoxFit.cover,
-                              progressIndicatorBuilder:
-                                  (context, url, progress) => const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "${product.title.substring(0, 16)}...",
-                                style: Theme.of(context).textTheme.titleSmall,
-                              ),
-                              Text("\$ ${product.price}"),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  );
-                },
-              ),
-
-              /// Filter by category
-
-              for (int i = 0; i < widget.category.length; i++) ...[
-                GridView.builder(
-                  shrinkWrap: true,
-                  itemCount: provider.filterProducts.length,
-                  semanticChildCount: 0,
+          child: provider.filterProducts.isEmpty && provider.isFilterBy
+              ? const Center(
+                  child: Text("No product found!"),
+                )
+              : GridView.builder(
+                  itemCount: provider.isFilterBy
+                      ? provider.filterProducts.length
+                      : _tabController.index == 0
+                          ? provider.allProducts.length
+                          : provider.filterProducts.length,
+                  padding: const EdgeInsets.all(8),
                   gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
                     crossAxisCount: 2,
                   ),
-                  itemBuilder: (_, index) {
-                    final product = provider.filterProducts[index];
+                  itemBuilder: (_, i) {
+                    final product = provider.isFilterBy
+                        ? provider.filterProducts[i]
+                        : _tabController.index == 0
+                            ? provider.allProducts[i]
+                            : provider.filterProducts[i];
 
-                    return Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 4, vertical: 8),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Expanded(
-                            child: CachedNetworkImage(
-                              imageUrl: product.image,
-                              fit: BoxFit.cover,
-                              progressIndicatorBuilder:
-                                  (context, url, progress) => const Center(
-                                child: CircularProgressIndicator(),
-                              ),
-                            ),
-                          ),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                "${product.title.substring(0, 16)}...",
-                                style: Theme.of(context).textTheme.titleSmall,
-                              ),
-                              Text("\$ ${product.price}"),
-                            ],
-                          )
-                        ],
-                      ),
-                    );
+                    return ProductCard(product: product);
                   },
                 ),
-              ]
-            ],
-          ),
-        )
+        ),
+
+        //
       ],
     );
   }

@@ -10,6 +10,7 @@ class AuthTextField extends StatelessWidget {
     required this.validator,
     this.onEditingComplete,
     this.focusNode,
+    this.obSecure = false,
   });
 
   final String title;
@@ -19,6 +20,7 @@ class AuthTextField extends StatelessWidget {
   final String? Function(String?)? validator;
   final void Function()? onEditingComplete;
   final FocusNode? focusNode;
+  final bool obSecure;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -35,6 +37,7 @@ class AuthTextField extends StatelessWidget {
           height: 5,
         ),
         TextFormField(
+          obscureText: obSecure,
           controller: controller,
           validator: validator,
           onEditingComplete: onEditingComplete,

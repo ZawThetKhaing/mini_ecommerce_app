@@ -1,8 +1,9 @@
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:mini_ecommerce_app_assignment/core/routes/route_config.dart';
 import 'package:mini_ecommerce_app_assignment/features/product/data/models/product_model.dart';
-import 'package:mini_ecommerce_app_assignment/features/product/presentation/providers/get_product_provider.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/presentation/providers/product_provider.dart';
 import 'package:provider/provider.dart';
 
 class SearchPage extends StatefulWidget {
@@ -19,12 +20,12 @@ class _SearchPageState extends State<SearchPage> {
   final FocusNode _searchFocus = FocusNode();
   final TextEditingController _textEditingController = TextEditingController();
 
-  late GetProductsProvider provider;
+  late ProductsProvider provider;
 
   @override
   void initState() {
     _searchFocus.requestFocus();
-    provider = context.read<GetProductsProvider>();
+    provider = context.read<ProductsProvider>();
     super.initState();
   }
 
@@ -87,6 +88,12 @@ class _SearchPageState extends State<SearchPage> {
             itemCount: searchData.length,
             itemBuilder: (_, index) {
               return ListTile(
+                onTap: () {
+                  Navigator.of(context).pushNamed(
+                    RouteConfig.details,
+                    arguments: searchData[index],
+                  );
+                },
                 title: Text(
                   searchData[index].title,
                 ),

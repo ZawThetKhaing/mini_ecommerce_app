@@ -21,7 +21,7 @@ abstract class AppTheme {
               ),
             ),
             backgroundColor: MaterialStateProperty.all(
-              Theme.of(context).primaryColor,
+              Colors.black,
             ),
             foregroundColor: MaterialStateProperty.all(
               Theme.of(context).scaffoldBackgroundColor,

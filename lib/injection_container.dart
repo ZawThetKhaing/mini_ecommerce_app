@@ -8,11 +8,18 @@ import 'package:mini_ecommerce_app_assignment/features/auth/domain/usecases/logo
 import 'package:mini_ecommerce_app_assignment/features/auth/domain/usecases/sign_up_usecase.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/presentation/provider/auth_provider.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/providers/home_nav_provider.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/data/datasource/product_local_datasource.dart';
 import 'package:mini_ecommerce_app_assignment/features/product/data/datasource/product_remote_datasource.dart';
-import 'package:mini_ecommerce_app_assignment/features/product/data/repository/get_product_repository_impl.dart';
-import 'package:mini_ecommerce_app_assignment/features/product/domain/repository/get_product_repository.dart';
-import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/get_products_usecase.dart';
-import 'package:mini_ecommerce_app_assignment/features/product/presentation/providers/get_product_provider.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/data/repository/product_repository_impl.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/domain/repository/product_repository.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/add_to_cart_usecase.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/add_to_wish_list_usecase.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/delete_cart_item_usecase.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/delete_wish_list_usecase.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/get_cart_list_usecase.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/get_wish_list_usecase.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/products_usecase.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/presentation/providers/product_provider.dart';
 import 'package:http/http.dart' as http;
 
 final sl = GetIt.instance;
@@ -31,8 +38,14 @@ Future<void> init() async {
   sl.registerFactory(() => HomeNavProvider());
 
   sl.registerFactory(
-    () => GetProductsProvider(
+    () => ProductsProvider(
       getProductsUsecase: sl(),
+      addToCartUsecase: sl(),
+      getCartListUsecase: sl(),
+      deleteCartItemUsecase: sl(),
+      addToWishListUsecase: sl(),
+      getWishListUsecase: sl(),
+      deleteWishListUsecase: sl(),
     ),
   );
 
@@ -44,9 +57,10 @@ Future<void> init() async {
     ),
   );
 
-  sl.registerLazySingleton<GetProductRepository>(
-    () => GetProductsRepositoryImpl(
+  sl.registerLazySingleton<ProductRepository>(
+    () => ProductsRepositoryImpl(
       productRemoteDataSource: sl(),
+      productLocalDataSource: sl(),
     ),
   );
 
@@ -78,7 +92,42 @@ Future<void> init() async {
 
   sl.registerLazySingleton<GetProductsUsecase>(
     () => GetProductsUsecase(
-      getProductRepository: sl(),
+      productRepository: sl(),
+    ),
+  );
+  sl.registerLazySingleton<AddToCartUsecase>(
+    () => AddToCartUsecase(
+      productRepository: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<GetCartListUsecase>(
+    () => GetCartListUsecase(
+      productRepository: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<DeleteCartItemUsecase>(
+    () => DeleteCartItemUsecase(
+      productRepository: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<AddToWishListUsecase>(
+    () => AddToWishListUsecase(
+      productRepository: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<GetWishListUsecase>(
+    () => GetWishListUsecase(
+      productRepository: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<DeleteWishListUsecase>(
+    () => DeleteWishListUsecase(
+      productRepository: sl(),
     ),
   );
 
@@ -90,7 +139,12 @@ Future<void> init() async {
   sl.registerLazySingleton<ProductRemoteDataSource>(
       () => ProductRemoteDataSourceImpl(client: sl()));
 
+  sl.registerLazySingleton<ProductLocalDataSource>(
+      () => ProductLocalDataSourceImpl());
+
   //! external
+
+  await sl<ProductLocalDataSource>().initDb();
 
   sl.registerLazySingleton<http.Client>(
     () => http.Client(),

@@ -5,6 +5,7 @@ import 'package:mini_ecommerce_app_assignment/features/others/pages/home_page.da
 import 'package:mini_ecommerce_app_assignment/features/others/pages/product_detail.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/pages/search_page.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/pages/wrapper.dart';
+import 'package:mini_ecommerce_app_assignment/features/others/views/cart_view.dart';
 import 'package:mini_ecommerce_app_assignment/features/product/data/models/product_model.dart';
 
 class RouteConfig {
@@ -14,6 +15,7 @@ class RouteConfig {
   static const String wrapper = '/wrapper';
   static const String search = '/search';
   static const String details = '/details';
+  static const String cart = '/cart';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -43,6 +45,13 @@ class RouteConfig {
             model: settings.arguments as ProductModel,
           ),
         );
+      case cart:
+        return MaterialPageRoute(
+          builder: (_) => CartView(
+            isFromDetail: settings.arguments as bool,
+          ),
+        );
+
       default:
         return null;
     }
