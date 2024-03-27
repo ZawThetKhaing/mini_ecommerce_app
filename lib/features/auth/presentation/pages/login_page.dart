@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mini_ecommerce_app_assignment/core/command/login_command.dart';
+import 'package:mini_ecommerce_app_assignment/core/routes/route_config.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/presentation/provider/auth_provider.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/presentation/widgets/auth_text_field.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -88,10 +89,10 @@ class _LoginPageState extends State<LoginPage> {
                       await authProvider.loginWithEmail(loginCommand);
                   if (isSuccess) {
                     if (!context.mounted) return;
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil('/home', (route) => false);
+                    Navigator.of(context).pushNamedAndRemoveUntil(
+                        RouteConfig.home, (route) => false);
                   } else {
-                    print("Login Failed");
+                    //ToDo :: Login Failed
                   }
                 },
                 child: const Text("Login"),

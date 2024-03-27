@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/providers/home_nav_provider.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/views/cart_view.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/views/home_view.dart';
+import 'package:mini_ecommerce_app_assignment/features/others/views/profile_view.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/views/wish_list_view.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
@@ -10,7 +11,7 @@ List<Widget> _views = [
   const HomeView(),
   const CartView(),
   const WishListView(),
-  Container(),
+  const ProfileView(),
 ];
 
 class HomePage extends StatelessWidget {
@@ -48,8 +49,8 @@ class HomePage extends StatelessWidget {
                   label: "Wishlist",
                 ),
                 BottomNavigationBarItem(
-                  icon: Icon(Icons.settings),
-                  label: "Setting",
+                  icon: Icon(Icons.person),
+                  label: "Profile",
                 ),
               ],
             );

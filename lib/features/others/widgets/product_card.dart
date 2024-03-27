@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mini_ecommerce_app_assignment/core/routes/route_config.dart';
 import 'package:mini_ecommerce_app_assignment/features/product/data/models/product_model.dart';
 import 'package:mini_ecommerce_app_assignment/features/product/presentation/providers/product_provider.dart';
@@ -79,11 +78,12 @@ class ProductCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 SizedBox(
-                  // width: 200,
-                  child: Text(
-                    "${product.title.substring(0, 16)}...",
-                    style: Theme.of(context).textTheme.titleSmall,
-                  ),
+                  width: 120,
+                  height: 20,
+                  child: Text(product.title,
+                      overflow: TextOverflow.ellipsis,
+                      maxLines: 2,
+                      style: Theme.of(context).textTheme.titleSmall),
                 ),
                 Text("\$ ${product.price}"),
               ],

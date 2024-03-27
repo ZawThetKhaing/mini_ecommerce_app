@@ -123,7 +123,7 @@ class _SignUpPageState extends State<SignUpPage> {
                     Navigator.of(context)
                         .pushNamedAndRemoveUntil('/home', (route) => false);
                   } else {
-                    print("Register Failed");
+                    //ToDo :: Register failed
                   }
                 },
                 child: const Text("Sign Up"),

@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/widgets/home_tab_bar_view.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/widgets/notification_icon.dart';
 import 'package:mini_ecommerce_app_assignment/features/product/presentation/providers/product_provider.dart';
@@ -27,7 +25,6 @@ class HomeView extends StatelessWidget {
               const NotificationIcon(),
             ],
           ),
-
           Row(
             children: [
               Expanded(
@@ -255,7 +252,6 @@ class HomeView extends StatelessWidget {
               ),
             ],
           ),
-
           Expanded(
             child: Consumer<ProductsProvider>(
               builder: (context, provider, _) {
@@ -269,21 +265,6 @@ class HomeView extends StatelessWidget {
               },
             ),
           ),
-
-          // Center(
-          //   child: ElevatedButton(
-          //       onPressed: () async {
-          //         try {
-          //           await authProvider.logout();
-          //           if (!context.mounted) return;
-          //           Navigator.of(context)
-          //               .pushNamedAndRemoveUntil('/login', (route) => false);
-          //         } catch (e) {
-          //           //  ToDo ::
-          //         }
-          //       },
-          //       child: Text("Logout")),
-          // )
         ],
       ),
     );

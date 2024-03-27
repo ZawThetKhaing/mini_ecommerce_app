@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/presentation/pages/login_page.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/presentation/pages/sign_up_page.dart';
+import 'package:mini_ecommerce_app_assignment/features/others/pages/address_form_page.dart';
+import 'package:mini_ecommerce_app_assignment/features/others/pages/check_out_page.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/pages/home_page.dart';
+import 'package:mini_ecommerce_app_assignment/features/others/pages/payment_form_page.dart';
+import 'package:mini_ecommerce_app_assignment/features/others/pages/order_successful_page.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/pages/product_detail.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/pages/search_page.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/pages/wrapper.dart';
@@ -16,6 +20,10 @@ class RouteConfig {
   static const String search = '/search';
   static const String details = '/details';
   static const String cart = '/cart';
+  static const String checkOut = '/checkOut';
+  static const String paymentForm = '/paymentForm';
+  static const String addressForm = '/addressForm';
+  static const String orderSuccessful = '/orderSuccessful';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -50,6 +58,22 @@ class RouteConfig {
           builder: (_) => CartView(
             isFromDetail: settings.arguments as bool,
           ),
+        );
+      case checkOut:
+        return MaterialPageRoute(
+          builder: (_) => const CheckOutPage(),
+        );
+      case paymentForm:
+        return MaterialPageRoute(
+          builder: (_) => const PaymentFormPage(),
+        );
+      case addressForm:
+        return MaterialPageRoute(
+          builder: (_) => const AddressFormPage(),
+        );
+      case orderSuccessful:
+        return MaterialPageRoute(
+          builder: (_) => const OrderSuccessfulPage(),
         );
 
       default:

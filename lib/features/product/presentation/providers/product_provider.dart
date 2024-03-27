@@ -41,7 +41,7 @@ class ProductsProvider extends ChangeNotifier {
 
   List<String>? get productCategory => _productCategory;
 
-  List<ProductModel> _cartProducts = [];
+  List<ProductModel> cartProducts = [];
 
   List<ProductModel> _wishListProducts = [];
 
@@ -59,6 +59,13 @@ class ProductsProvider extends ChangeNotifier {
 
   bool isFilterBy = false;
 
+  Object? selectedRadioBtnValue;
+
+  void radioBtnChange(Object? value) {
+    selectedRadioBtnValue = value;
+    notifyListeners();
+  }
+
   List<ProductModel> search(String? value) {
     if (value == null) return [];
     return allProducts
@@ -71,8 +78,8 @@ class ProductsProvider extends ChangeNotifier {
   }
 
   double get subTotal {
-    if (_cartProducts.isEmpty == true) return 0;
-    final price = _cartProducts.map((e) => double.parse(e.price)).toList();
+    if (cartProducts.isEmpty == true) return 0;
+    final price = cartProducts.map((e) => double.parse(e.price)).toList();
     double total = 0;
     price.forEach(
       (element) {
@@ -168,10 +175,9 @@ class ProductsProvider extends ChangeNotifier {
         return [];
       },
       (list) {
-        print(_cartProducts);
-        _cartProducts = list.map((e) => ProductModel.fromEntity(e!)).toList();
+        cartProducts = list.map((e) => ProductModel.fromEntity(e!)).toList();
 
-        return _cartProducts;
+        return cartProducts;
       },
     );
   }

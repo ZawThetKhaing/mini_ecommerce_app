@@ -25,14 +25,16 @@ class _HomeTabBarViewState extends State<HomeTabBarView>
     _tabController =
         TabController(length: widget.category.length + 1, vsync: this);
 
-    _tabController.addListener(() {
-      if (_tabController.indexIsChanging) {
-        _tabController.index == 0
-            ? provider.filterByCategory("All")
-            : provider.filterByCategory(
-                provider.productCategory![_tabController.index - 1]);
-      }
-    });
+    _tabController.addListener(
+      () {
+        if (_tabController.indexIsChanging) {
+          _tabController.index == 0
+              ? provider.filterByCategory("All")
+              : provider.filterByCategory(
+                  provider.productCategory![_tabController.index - 1]);
+        }
+      },
+    );
     super.initState();
   }
 
