@@ -10,10 +10,10 @@ class PurchaseTotalModel extends PurchaseTotalEntity {
 
   factory PurchaseTotalModel.fromJson(Map<String, dynamic> json) =>
       PurchaseTotalModel(
-        subTotal: json['sub_total'],
-        shippingFee: json['shipping_fee'],
-        tax: json['tax'],
-        total: json['total'],
+        subTotal: double.parse(json['sub_total'].toString()),
+        shippingFee: double.parse(json['shipping_fee'].toString()),
+        tax: double.parse(json['tax'].toString()),
+        total: double.parse(json['total'].toString()),
       );
 
   Map<String, dynamic> toJson() => {

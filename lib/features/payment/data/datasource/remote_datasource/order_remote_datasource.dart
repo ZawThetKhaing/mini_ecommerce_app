@@ -3,6 +3,7 @@ import 'package:dartz/dartz.dart';
 import 'package:mini_ecommerce_app_assignment/core/constants/firestore_collections.dart';
 import 'package:mini_ecommerce_app_assignment/core/error/faliure.dart';
 import 'package:mini_ecommerce_app_assignment/core/utils/typedef.dart';
+import 'package:mini_ecommerce_app_assignment/features/auth/data/model/user_model.dart';
 import 'package:mini_ecommerce_app_assignment/features/payment/data/model/order_model.dart';
 import 'package:mini_ecommerce_app_assignment/features/payment/data/model/order_list_model.dart';
 import 'package:mini_ecommerce_app_assignment/features/payment/domain/usecases/set_order_usecase.dart';
@@ -80,7 +81,7 @@ class OrderRemoteDataSourceImpl implements OrderRemoteDataSource {
       await firebaseFirestore
           .collection(FireStoreCollections.orderCollection)
           .doc(params.uid)
-          .update((params.orderListEntity as OrderModel).toJson());
+          .update((params.orderListEntity as OrderListModel).toJson());
 
       return const Right(null);
     } on firestore.FirebaseException catch (e) {

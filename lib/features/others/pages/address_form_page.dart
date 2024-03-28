@@ -1,10 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:mini_ecommerce_app_assignment/features/auth/presentation/provider/auth_provider.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/widgets/custom_text_field.dart';
+import 'package:mini_ecommerce_app_assignment/features/payment/data/model/address_model.dart';
+import 'package:mini_ecommerce_app_assignment/features/payment/data/model/order_model.dart';
 import 'package:mini_ecommerce_app_assignment/features/payment/presentation/providers/payment_provider.dart';
 import 'package:provider/provider.dart';
 
 class AddressFormPage extends StatefulWidget {
-  const AddressFormPage({super.key});
+  const AddressFormPage({
+    super.key,
+    this.orderModel,
+    this.isFromOrderDetail = false,
+  });
+  final OrderModel? orderModel;
+  final bool isFromOrderDetail;
 
   @override
   State<AddressFormPage> createState() => _AddressFormPageState();
@@ -23,16 +32,16 @@ class _AddressFormPageState extends State<AddressFormPage> {
 
   final GlobalKey<FormState> fromKey = GlobalKey<FormState>();
 
-  late final PaymentProvider paymentProvider;
+  late final PaymentProvider provider;
 
   @override
   void initState() {
-    paymentProvider = context.read<PaymentProvider>();
-    _nameController.text = paymentProvider.addressModel?.fullName ?? "";
-    _phoneController.text = paymentProvider.addressModel?.phoneNumber ?? "";
-    _addressController.text = paymentProvider.addressModel?.address ?? "";
+    provider = context.read<PaymentProvider>();
+    _nameController.text = widget.orderModel?.address.fullName ?? "";
+    _phoneController.text = widget.orderModel?.address.phoneNumber ?? "";
+    _addressController.text = widget.orderModel?.address.address ?? "";
     _additionalInfoController.text =
-        paymentProvider.addressModel?.additionalInfo ?? "";
+        widget.orderModel?.address.additionalInfo ?? "";
 
     super.initState();
   }
@@ -104,20 +113,54 @@ class _AddressFormPageState extends State<AddressFormPage> {
                 height: 50,
                 width: MediaQuery.of(context).size.width,
                 child: ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (fromKey.currentState?.validate() != true) return;
-                    context.read<PaymentProvider>().storeAddress(
+                    if (widget.isFromOrderDetail) {
+                      final updatedModel = widget.orderModel?.copyWith(
+                        addressModel:
+                            (widget.orderModel!.address as AddressModel)
+                                .copyWith(
                           fullName: _nameController.text,
                           phoneNumber: _phoneController.text,
                           address: _addressController.text,
                           additionalInfo: _additionalInfoController.text,
-                        );
+                        ),
+                        updatedAt: DateTime.now(),
+                      );
+                      final result = await provider.updateorDeleteOrder(
+                        isUpdate: true,
+                        uid: context.read<AuthProvider>().user?.id ?? '',
+                        orderModel: updatedModel!,
+                      );
+                      Future.delayed(Duration.zero).whenComplete(() {
+                        if (result == true) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Updated address."),
+                            ),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text("Update failed."),
+                            ),
+                          );
+                        }
+                      });
+                    } else {
+                      provider.storeAddress(
+                        fullName: _nameController.text,
+                        phoneNumber: _phoneController.text,
+                        address: _addressController.text,
+                        additionalInfo: _additionalInfoController.text,
+                      );
 
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Address save successfully"),
-                      ),
-                    );
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Address save successfully"),
+                        ),
+                      );
+                    }
                   },
                   child: const Text("Save"),
                 ),

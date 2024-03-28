@@ -4,12 +4,16 @@ import 'package:mini_ecommerce_app_assignment/features/auth/presentation/pages/s
 import 'package:mini_ecommerce_app_assignment/features/others/pages/address_form_page.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/pages/check_out_page.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/pages/home_page.dart';
+import 'package:mini_ecommerce_app_assignment/features/others/pages/order_details.dart';
+import 'package:mini_ecommerce_app_assignment/features/others/pages/order_page.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/pages/payment_form_page.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/pages/order_successful_page.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/pages/product_detail.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/pages/search_page.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/pages/wrapper.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/views/cart_view.dart';
+import 'package:mini_ecommerce_app_assignment/features/payment/data/model/address_model.dart';
+import 'package:mini_ecommerce_app_assignment/features/payment/data/model/order_model.dart';
 import 'package:mini_ecommerce_app_assignment/features/product/data/models/product_model.dart';
 
 class RouteConfig {
@@ -24,6 +28,8 @@ class RouteConfig {
   static const String paymentForm = '/paymentForm';
   static const String addressForm = '/addressForm';
   static const String orderSuccessful = '/orderSuccessful';
+  static const String orders = '/orders';
+  static const String orderDetails = '/orderDetails';
 
   static Route<dynamic>? onGenerateRoute(RouteSettings settings) {
     switch (settings.name) {
@@ -69,11 +75,27 @@ class RouteConfig {
         );
       case addressForm:
         return MaterialPageRoute(
-          builder: (_) => const AddressFormPage(),
+          builder: (_) => AddressFormPage(
+            orderModel: settings.arguments as OrderModel?,
+            isFromOrderDetail: false,
+          ),
         );
       case orderSuccessful:
         return MaterialPageRoute(
           builder: (_) => const OrderSuccessfulPage(),
+        );
+      case orders:
+        return MaterialPageRoute(
+          builder: (_) => OrderPage(
+            uid: settings.arguments as String,
+          ),
+        );
+
+      case orderDetails:
+        return MaterialPageRoute(
+          builder: (_) => OrderDetailsPage(
+            orderModel: settings.arguments as OrderModel,
+          ),
         );
 
       default:

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:mini_ecommerce_app_assignment/features/payment/data/model/address_model.dart';
 import 'package:mini_ecommerce_app_assignment/features/payment/data/model/payment_method_model.dart';
 import 'package:mini_ecommerce_app_assignment/features/payment/data/model/purchase_total.dart';
 import 'package:mini_ecommerce_app_assignment/features/payment/domain/entities/order_entity.dart';
@@ -8,6 +9,7 @@ class OrderModel extends OrderEntity {
   const OrderModel({
     super.orderId,
     super.paymentMethod,
+    required super.address,
     required super.purchaseTotal,
     required super.cartItems,
     required super.createdAt,
@@ -20,6 +22,7 @@ class OrderModel extends OrderEntity {
   factory OrderModel.fromJson(Map<String, dynamic> json) {
     return OrderModel(
       orderId: json['order_id'],
+      address: AddressModel.fromJson(json['address']),
       paymentMethod: json['payment_method'] != null
           ? PaymentMethodModel.fromJson(json['payment_method'])
           : null,
@@ -37,7 +40,8 @@ class OrderModel extends OrderEntity {
 
   Map<String, dynamic> toJson([String? uuid]) {
     return {
-      'order_id': uuid ?? orderId,
+      'order_id': orderId ?? uuid,
+      'address': (address as AddressModel).toJson(),
       'payment_method': paymentMethod != null
           ? (paymentMethod as PaymentMethodModel).toJson()
           : null,
@@ -50,4 +54,28 @@ class OrderModel extends OrderEntity {
       'is_cash_on_delivery': isCashOnDelivery,
     };
   }
+
+  OrderModel copyWith({
+    String? orderId,
+    AddressModel? addressModel,
+    PaymentMethodModel? paymentMethod,
+    PurchaseTotalModel? purchaseTotal,
+    List<ProductModel>? cartItems,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    DateTime? arrivialTime,
+    bool? isDelivered,
+    bool? isCashOnDelivery,
+  }) =>
+      OrderModel(
+          orderId: orderId ?? this.orderId,
+          address: addressModel ?? address,
+          paymentMethod: paymentMethod ?? this.paymentMethod,
+          purchaseTotal: purchaseTotal ?? this.purchaseTotal,
+          cartItems: cartItems ?? this.cartItems,
+          createdAt: createdAt ?? this.createdAt,
+          updatedAt: updatedAt ?? this.updatedAt,
+          arrivialTime: arrivialTime ?? this.arrivialTime,
+          isDelivered: isDelivered ?? this.isDelivered,
+          isCashOnDelivery: isCashOnDelivery ?? this.isCashOnDelivery);
 }

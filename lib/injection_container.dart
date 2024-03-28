@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mini_ecommerce_app_assignment/core/services/local_notification_service.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/data/datasource/auth_remote_data_source.dart';
+import 'package:mini_ecommerce_app_assignment/features/auth/data/model/user_model.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/data/repository/auth_repository_impl.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/domain/repository/auth_repository.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/domain/usecases/auth_user_usecase.dart';

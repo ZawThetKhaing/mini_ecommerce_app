@@ -10,8 +10,10 @@ class TotalBottomBar extends StatelessWidget {
   const TotalBottomBar({
     super.key,
     this.isCheckOut = false,
+    this.isOrderDetails = false,
   });
   final bool isCheckOut;
+  final bool isOrderDetails;
 
   @override
   Widget build(BuildContext context) {
@@ -74,91 +76,94 @@ class TotalBottomBar extends StatelessWidget {
               ],
             ),
           ),
-          SizedBox(
-            width: MediaQuery.of(context).size.width,
-            height: 50,
-            child: ElevatedButton(
-              onPressed: () async {
-                final provier = context.read<PaymentProvider>();
+          isOrderDetails
+              ? const SizedBox()
+              : SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: 50,
+                  child: ElevatedButton(
+                    onPressed: () async {
+                      final provier = context.read<PaymentProvider>();
 
-                if (!isCheckOut) {
-                  Navigator.of(context).pushNamed(RouteConfig.checkOut);
-                  return;
-                } else {
-                  final cartProvider = context.read<ProductsProvider>();
-                  final provider = context.read<PaymentProvider>();
-                  final authProvider = context.read<AuthProvider>();
+                      if (!isCheckOut) {
+                        Navigator.of(context).pushNamed(RouteConfig.checkOut);
+                        return;
+                      } else {
+                        final cartProvider = context.read<ProductsProvider>();
+                        final provider = context.read<PaymentProvider>();
+                        final authProvider = context.read<AuthProvider>();
 
-                  final purchaseTotal = PurchaseTotalModel(
-                    subTotal: productProvider.subTotal,
-                    shippingFee: 50,
-                    tax: productProvider.tax,
-                    total: productProvider.total,
-                  );
+                        final purchaseTotal = PurchaseTotalModel(
+                          subTotal: productProvider.subTotal,
+                          shippingFee: 50,
+                          tax: productProvider.tax,
+                          total: productProvider.total,
+                        );
 
-                  if (provier.addressModel == null ||
-                      productProvider.selectedRadioBtnValue == null) {
-                    showDialog(
-                      context: context,
-                      builder: (_) => AlertDialog(
-                        title: Text(
-                          productProvider.selectedRadioBtnValue == null
-                              ? "Payment method empty!"
-                              : "Address empty!",
-                        ),
-                        content: Text(
-                            productProvider.selectedRadioBtnValue == null
-                                ? "Please choose a payment method."
-                                : "You need to input an address before order."),
-                        actions: [
-                          ElevatedButton(
-                            onPressed: Navigator.of(context).pop,
-                            child: const Text("Ok"),
-                          )
-                        ],
-                      ),
-                    );
-                  }
+                        if (provier.addressModel == null ||
+                            productProvider.selectedRadioBtnValue == null) {
+                          showDialog(
+                            context: context,
+                            builder: (_) => AlertDialog(
+                              title: Text(
+                                productProvider.selectedRadioBtnValue == null
+                                    ? "Payment method empty!"
+                                    : "Address empty!",
+                              ),
+                              content: Text(productProvider
+                                          .selectedRadioBtnValue ==
+                                      null
+                                  ? "Please choose a payment method."
+                                  : "You need to input an address before order."),
+                              actions: [
+                                ElevatedButton(
+                                  onPressed: Navigator.of(context).pop,
+                                  child: const Text("Ok"),
+                                )
+                              ],
+                            ),
+                          );
+                        }
 
-                  if (productProvider.selectedRadioBtnValue == 1 &&
-                      provider.paymentMethodModel == null) {
-                    // Radio button value is 1 when user select bank payment
+                        if (productProvider.selectedRadioBtnValue == 1 &&
+                            provider.paymentMethodModel == null) {
+                          // Radio button value is 1 when user select bank payment
 
-                    await Navigator.of(context).pushNamed(
-                      RouteConfig.paymentForm,
-                    );
-                  }
+                          await Navigator.of(context).pushNamed(
+                            RouteConfig.paymentForm,
+                          );
+                        }
 
-                  if (productProvider.selectedRadioBtnValue == 1 &&
-                      provider.paymentMethodModel == null) return;
+                        if (productProvider.selectedRadioBtnValue == 1 &&
+                            provider.paymentMethodModel == null) return;
 
-                  final result = await provider.setOrder(
-                    purchaseTotalModel: purchaseTotal,
-                    carItems: cartProvider.cartProducts,
-                    isCashonDelivery:
-                        productProvider.selectedRadioBtnValue == 2,
-                    uid: authProvider.user?.id ?? '',
-                  );
+                        final result = await provider.setOrder(
+                          purchaseTotalModel: purchaseTotal,
+                          carItems: cartProvider.cartProducts,
+                          isCashonDelivery:
+                              productProvider.selectedRadioBtnValue == 2,
+                          uid: authProvider.user?.id ?? '',
+                        );
 
-                  Future.delayed(const Duration(seconds: 0)).whenComplete(
-                    () {
-                      if (result == true) {
-                        final deleteCart = productProvider.cartProducts
-                            .map((e) => productProvider.deleteCartItem(e))
-                            .toList();
-                        Future.wait(deleteCart);
-                        Navigator.of(context)
-                            .pushNamed(RouteConfig.orderSuccessful);
+                        Future.delayed(const Duration(seconds: 0)).whenComplete(
+                          () {
+                            if (result == true) {
+                              final deleteCart = productProvider.cartProducts
+                                  .map((e) => productProvider.deleteCartItem(e))
+                                  .toList();
+                              Future.wait(deleteCart);
+                              Navigator.of(context)
+                                  .pushNamed(RouteConfig.orderSuccessful);
+                            }
+                          },
+                        );
                       }
                     },
-                  );
-                }
-              },
-              child: Text(isCheckOut
-                  ? "Place order"
-                  : "Checkout (${productProvider.cartProducts.length})"),
-            ),
-          ),
+                    child: Text(isCheckOut
+                        ? "Place order"
+                        : "Checkout (${productProvider.cartProducts.length})"),
+                  ),
+                ),
         ],
       ),
     );

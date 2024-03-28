@@ -28,7 +28,7 @@ class PaymentProvider extends ChangeNotifier {
 
   final LocalNotification localNotification;
 
-  List<OrderModel> orderList = [];
+  List<OrderModel>? orderList = [];
 
   Future<bool> setOrder({
     required PurchaseTotalModel purchaseTotalModel,
@@ -37,9 +37,13 @@ class PaymentProvider extends ChangeNotifier {
     required String uid,
   }) async {
     if (_addressModel == null) return false;
+    if (orderList?.isEmpty == true) {
+      orderList = await getOrderList(uid);
+    }
 
     OrderModel orderModel = OrderModel(
       paymentMethod: _paymentMethodModel,
+      address: _addressModel!,
       purchaseTotal: purchaseTotalModel,
       cartItems: carItems as List<ProductEntity>,
       createdAt: DateTime.now(),
@@ -48,9 +52,13 @@ class PaymentProvider extends ChangeNotifier {
       isDelivered: false,
       isCashOnDelivery: isCashonDelivery,
     );
+    if (orderList?.isNotEmpty == true) {
+      orderList?.add(orderModel);
+    }
 
-    OrderListModel orderListModel =
-        OrderListModel(address: _addressModel!, orderList: [orderModel]);
+    OrderListModel orderListModel = OrderListModel(
+      orderList: orderList?.isNotEmpty == true ? orderList! : [orderModel],
+    );
 
     SetOrderParams params =
         SetOrderParams(uid: uid, orderListEntity: orderListModel);
@@ -64,10 +72,21 @@ class PaymentProvider extends ChangeNotifier {
     });
   }
 
-  Future<bool> updateOrder({required SetOrderParams orderParams}) async {
-    // if (orderList.contains(orderParams.orderEntity)) {
-    //   orderList.remove(orderParams.orderEntity);
-    // }
+  Future<bool> updateorDeleteOrder({
+    required String uid,
+    OrderModel? orderModel,
+    bool isUpdate = false,
+  }) async {
+    orderList?.remove(orderModel);
+    //Remove old orderModel and add updated
+    if (isUpdate) {
+      orderList?.add(orderModel!);
+    }
+    final orderListModel = OrderListModel(orderList: orderList ?? []);
+
+    final orderParams =
+        SetOrderParams(uid: uid, orderListEntity: orderListModel);
+
     final result = await updateOrderUsecase(orderParams);
 
     return result.fold((l) => false, (r) {
@@ -75,13 +94,13 @@ class PaymentProvider extends ChangeNotifier {
     });
   }
 
-  Future<bool> deleteOrder({required String orderId}) async {
-    final result = await deleteOrderUsecase(orderId);
+  // Future<bool> deleteOrder({required String orderId}) async {
+  //   final result = await deleteOrderUsecase(orderId);
 
-    return result.fold((l) => false, (r) {
-      return true;
-    });
-  }
+  //   return result.fold((l) => false, (r) {
+  //     return true;
+  //   });
+  // }
 
   Future<List<OrderModel>?> getOrderList(String uid) async {
     final result = await getOrderListUsecase(uid);
@@ -116,6 +135,7 @@ class PaymentProvider extends ChangeNotifier {
       fullName: fullName,
       phoneNumber: phoneNumber,
       address: address,
+      additionalInfo: additionalInfo,
     );
     notifyListeners();
   }

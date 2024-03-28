@@ -73,7 +73,10 @@ class ProfileView extends StatelessWidget {
                 ProfileListTile(
                   icon: PhosphorIconsRegular.shoppingBagOpen,
                   title: "Orders",
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.of(context)
+                        .pushNamed(RouteConfig.orders, arguments: userModel.id);
+                  },
                 ),
                 ProfileListTile(
                   icon: PhosphorIconsRegular.gear,

@@ -6,14 +6,11 @@ import 'package:mini_ecommerce_app_assignment/features/product/domain/entities/p
 
 class OrderListEntity extends Equatable {
   const OrderListEntity({
-    required this.address,
     required this.orderList,
   });
-  final AddressEntity address;
   final List<OrderEntity> orderList;
   @override
   List<Object?> get props => [
-        address,
         orderList,
       ];
 }
@@ -22,6 +19,7 @@ class OrderEntity extends Equatable {
   const OrderEntity(
       {this.orderId,
       this.paymentMethod,
+      required this.address,
       required this.purchaseTotal,
       required this.cartItems,
       required this.createdAt,
@@ -31,6 +29,7 @@ class OrderEntity extends Equatable {
       required this.isCashOnDelivery});
 
   final String? orderId;
+  final AddressEntity address;
   final PaymentMethodEntity? paymentMethod;
   final PurchaseTotalEntity purchaseTotal;
   final List<ProductEntity> cartItems;
@@ -42,13 +41,15 @@ class OrderEntity extends Equatable {
 
   @override
   List<Object?> get props => [
-        paymentMethod,
-        purchaseTotal,
-        cartItems,
-        createdAt,
-        updatedAt,
-        arrivialTime,
-        isDelivered,
-        isCashOnDelivery,
+        orderId,
+        // address,
+        // paymentMethod,
+        // purchaseTotal,
+        // cartItems,
+        // createdAt,
+        // updatedAt,
+        // arrivialTime,
+        // isDelivered,
+        // isCashOnDelivery,
       ];
 }

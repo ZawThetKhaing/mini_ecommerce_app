@@ -21,4 +21,16 @@ class AddressModel extends AddressEntity {
         'address': address,
         'additionalInfo': additionalInfo,
       };
+
+  AddressModel copyWith(
+          {String? fullName,
+          String? phoneNumber,
+          String? address,
+          String? additionalInfo}) =>
+      AddressModel(
+        fullName: fullName ?? this.fullName,
+        phoneNumber: phoneNumber ?? this.phoneNumber,
+        address: address ?? this.address,
+        additionalInfo: additionalInfo ?? this.additionalInfo,
+      );
 }
