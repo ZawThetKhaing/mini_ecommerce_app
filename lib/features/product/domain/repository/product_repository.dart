@@ -6,6 +6,8 @@ abstract class ProductRepository {
 
   ResultVoid addToCart(ProductEntity entity);
 
+  ResultVoid updateCartItem(ProductEntity entity);
+
   ResultFuture<List<ProductEntity?>> getCartList();
 
   ResultVoid deleteCartItem(ProductEntity entity);

@@ -7,23 +7,29 @@ import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/d
 import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/get_cart_list_usecase.dart';
 import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/get_wish_list_usecase.dart';
 import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/products_usecase.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/update_cart_item_usecase.dart';
 
 class ProductsProvider extends ChangeNotifier {
   ProductsProvider({
     required this.getProductsUsecase,
     required this.addToCartUsecase,
     required this.getCartListUsecase,
+    required this.updateCartItemUsecase,
     required this.deleteCartItemUsecase,
     required this.addToWishListUsecase,
     required this.getWishListUsecase,
     required this.deleteWishListUsecase,
-  });
+  }) {
+    getCartProducts();
+  }
 
   final GetProductsUsecase getProductsUsecase;
 
   final AddToCartUsecase addToCartUsecase;
 
   final GetCartListUsecase getCartListUsecase;
+
+  final UpdateCartItemUsecase updateCartItemUsecase;
 
   final DeleteCartItemUsecase deleteCartItemUsecase;
 
@@ -77,10 +83,26 @@ class ProductsProvider extends ChangeNotifier {
         .toList();
   }
 
+  double get shippingFee => 5;
+
   double get subTotal {
     if (cartProducts.isEmpty == true) return 0;
-    final price = cartProducts.map((e) => double.parse(e.price)).toList();
+    final price = cartProducts
+        .map((e) => double.parse(e.price) * (e.qty ?? 1) as num)
+        .toList();
     double total = 0;
+    price.forEach(
+      (element) {
+        total += element;
+      },
+    );
+    return total;
+  }
+
+  int get cartItemsQty {
+    if (cartProducts.isEmpty == true) return 0;
+    final price = cartProducts.map((e) => e.qty ?? 1).toList();
+    int total = 0;
     price.forEach(
       (element) {
         total += element;
@@ -91,7 +113,7 @@ class ProductsProvider extends ChangeNotifier {
 
   double get tax => subTotal * 0.05;
 
-  double get total => subTotal + tax + 50;
+  double get total => subTotal + tax + shippingFee;
 
   void onDropDownChange(String? value) {
     dropDownValue = value ?? '';
@@ -162,9 +184,13 @@ class ProductsProvider extends ChangeNotifier {
   }
 
   Future<bool> addToCart(ProductModel model) async {
-    final result = await addToCartUsecase(model);
+    final result =
+        await addToCartUsecase(model.copyWith(createdAt: DateTime.now()));
 
-    return result.fold((l) => false, (r) => true);
+    return result.fold((l) => false, (r) {
+      getCartProducts();
+      return true;
+    });
   }
 
   Future<List<ProductModel>?> getCartProducts() async {
@@ -182,8 +208,26 @@ class ProductsProvider extends ChangeNotifier {
     );
   }
 
+  Future<bool> updateCartItem(ProductModel model) async {
+    final result = await updateCartItemUsecase(model);
+
+    return result.fold((l) {
+      notifyListeners();
+
+      return false;
+    }, (r) {
+      cartProducts.remove(model);
+      cartProducts.add(model);
+      notifyListeners();
+
+      return true;
+    });
+  }
+
   Future<void> deleteCartItem(ProductModel model) async {
     await deleteCartItemUsecase(model);
+
+    cartProducts.remove(model);
     notifyListeners();
   }
 

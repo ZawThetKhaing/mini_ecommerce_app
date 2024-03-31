@@ -2,10 +2,10 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_it/get_it.dart';
 import 'package:mini_ecommerce_app_assignment/core/services/local_notification_service.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/data/datasource/auth_remote_data_source.dart';
-import 'package:mini_ecommerce_app_assignment/features/auth/data/model/user_model.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/data/repository/auth_repository_impl.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/domain/repository/auth_repository.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/domain/usecases/auth_user_usecase.dart';
+import 'package:mini_ecommerce_app_assignment/features/auth/domain/usecases/google_login_usecase.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/domain/usecases/login_usecase.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/domain/usecases/sign_up_usecase.dart';
@@ -16,6 +16,7 @@ import 'package:mini_ecommerce_app_assignment/features/payment/data/repository/o
 import 'package:mini_ecommerce_app_assignment/features/payment/domain/repository/order_repository.dart';
 import 'package:mini_ecommerce_app_assignment/features/payment/domain/usecases/delete_order_usecase.dart';
 import 'package:mini_ecommerce_app_assignment/features/payment/domain/usecases/get_order_list_usecase.dart';
+import 'package:mini_ecommerce_app_assignment/features/payment/domain/usecases/get_order_stream_usecase.dart';
 import 'package:mini_ecommerce_app_assignment/features/payment/domain/usecases/set_order_usecase.dart';
 import 'package:mini_ecommerce_app_assignment/features/payment/domain/usecases/update_order_usecase.dart';
 import 'package:mini_ecommerce_app_assignment/features/payment/presentation/providers/payment_provider.dart';
@@ -30,6 +31,7 @@ import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/d
 import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/get_cart_list_usecase.dart';
 import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/get_wish_list_usecase.dart';
 import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/products_usecase.dart';
+import 'package:mini_ecommerce_app_assignment/features/product/domain/usecaese/update_cart_item_usecase.dart';
 import 'package:mini_ecommerce_app_assignment/features/product/presentation/providers/product_provider.dart';
 import 'package:http/http.dart' as http;
 import 'package:uuid/uuid.dart';
@@ -42,6 +44,7 @@ Future<void> init() async {
     () => AuthProvider(
       loginUsecase: sl(),
       signUpUsecase: sl(),
+      googleLoginUsecase: sl(),
       authUserUsecase: sl(),
       logoutUsecase: sl(),
     ),
@@ -54,6 +57,7 @@ Future<void> init() async {
       getProductsUsecase: sl(),
       addToCartUsecase: sl(),
       getCartListUsecase: sl(),
+      updateCartItemUsecase: sl(),
       deleteCartItemUsecase: sl(),
       addToWishListUsecase: sl(),
       getWishListUsecase: sl(),
@@ -68,6 +72,7 @@ Future<void> init() async {
       updateOrderUsecase: sl(),
       deleteOrderUsecase: sl(),
       localNotification: sl(),
+      getOrderStream: sl(),
     ),
   );
 
@@ -111,6 +116,12 @@ Future<void> init() async {
     ),
   );
 
+  sl.registerLazySingleton<GoogleLoginUsecase>(
+    () => GoogleLoginUsecase(
+      authRepository: sl(),
+    ),
+  );
+
   sl.registerLazySingleton<AuthUserUsecase>(
     () => AuthUserUsecase(
       authRepository: sl(),
@@ -130,6 +141,12 @@ Future<void> init() async {
 
   sl.registerLazySingleton<GetCartListUsecase>(
     () => GetCartListUsecase(
+      productRepository: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<UpdateCartItemUsecase>(
+    () => UpdateCartItemUsecase(
       productRepository: sl(),
     ),
   );
@@ -166,6 +183,12 @@ Future<void> init() async {
 
   sl.registerLazySingleton<GetOrderListUsecase>(
     () => GetOrderListUsecase(
+      orderRepository: sl(),
+    ),
+  );
+
+  sl.registerLazySingleton<GetOrderStreamUsecase>(
+    () => GetOrderStreamUsecase(
       orderRepository: sl(),
     ),
   );

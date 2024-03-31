@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:mini_ecommerce_app_assignment/core/command/sign_up_command.dart';
+import 'package:mini_ecommerce_app_assignment/core/routes/route_config.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/presentation/provider/auth_provider.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/presentation/widgets/auth_text_field.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 class SignUpPage extends StatefulWidget {
@@ -41,130 +41,156 @@ class _SignUpPageState extends State<SignUpPage> {
   Widget build(BuildContext context) {
     final authProvider = context.read<AuthProvider>();
 
-    return SafeArea(
-      child: Scaffold(
-        body: Form(
-          key: formKey,
-          child: ListView(
-            padding: const EdgeInsets.only(
-              top: 40,
-              left: 24,
-              right: 24,
-              bottom: 24,
+    return Scaffold(
+      body: Form(
+        key: formKey,
+        child: ListView(
+          padding: const EdgeInsets.only(
+            top: 40,
+            left: 24,
+            right: 24,
+            bottom: 24,
+          ),
+          children: [
+            Text(
+              "Create an account",
+              style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
             ),
-            children: [
-              Text(
-                "Create an account",
-                style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+            Text(
+              "Let's create your account.",
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(
+              height: 12,
+            ),
+            AuthTextField(
+              title: "Full Name",
+              hintText: "Enter your full name",
+              controller: _userNameController,
+              validator: (value) =>
+                  value == null || value.isEmpty ? "Required" : null,
+              onEditingComplete: _emailFocusNode.requestFocus,
+            ),
+            AuthTextField(
+              title: 'Email',
+              hintText: "Enter your email address",
+              controller: _emailController,
+              focusNode: _emailFocusNode,
+              validator: (value) =>
+                  value == null || value.isEmpty ? "Required" : null,
+              onEditingComplete: _passwordFocusNode.requestFocus,
+            ),
+            AuthTextField(
+              obSecure: true,
+              title: "Password",
+              hintText: "Enter your password",
+              controller: _passwordController,
+              focusNode: _passwordFocusNode,
+              validator: (value) =>
+                  value == null || value.isEmpty ? "Required" : null,
+              onEditingComplete: _confrimPasswordFocusNode.requestFocus,
+            ),
+            AuthTextField(
+              obSecure: true,
+              title: "Confirm Password",
+              hintText: "Please enter password again",
+              controller: _confrimPasswordController,
+              focusNode: _confrimPasswordFocusNode,
+              validator: (value) => value != _passwordController.text
+                  ? "Password does not match"
+                  : value?.isEmpty == true
+                      ? "Required"
+                      : null,
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if (formKey.currentState?.validate() != true) return;
+                final signUpCommand = SignUpCommand(
+                  email: _emailController.text,
+                  name: _userNameController.text,
+                  password: _passwordController.text,
+                );
+
+                final isSuccess = await authProvider
+                    .signUpwithEmail(signUpCommand)
+                    .whenComplete(
+                      () =>
+                          Navigator.of(context).pushNamed(RouteConfig.wrapper),
+                    );
+
+                Future.delayed(Duration.zero).whenComplete(
+                  () => ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      duration: Durations.long1,
+                      content: Text("Creating account ..."),
                     ),
-              ),
-              Text(
-                "Let's create your account.",
-                style: Theme.of(context).textTheme.bodyMedium,
-              ),
-              const SizedBox(
-                height: 12,
-              ),
-              AuthTextField(
-                title: "Full Name",
-                hintText: "Enter your full name",
-                controller: _userNameController,
-                validator: (value) =>
-                    value == null || value.isEmpty ? "Required" : null,
-                onEditingComplete: _emailFocusNode.requestFocus,
-              ),
-              AuthTextField(
-                title: 'Email',
-                hintText: "Enter your email address",
-                controller: _emailController,
-                focusNode: _emailFocusNode,
-                validator: (value) =>
-                    value == null || value.isEmpty ? "Required" : null,
-                onEditingComplete: _passwordFocusNode.requestFocus,
-              ),
-              AuthTextField(
-                obSecure: true,
-                title: "Password",
-                hintText: "Enter your password",
-                controller: _passwordController,
-                focusNode: _passwordFocusNode,
-                validator: (value) =>
-                    value == null || value.isEmpty ? "Required" : null,
-                onEditingComplete: _confrimPasswordFocusNode.requestFocus,
-              ),
-              AuthTextField(
-                obSecure: true,
-                title: "Confirm Password",
-                hintText: "Please enter password again",
-                controller: _confrimPasswordController,
-                focusNode: _confrimPasswordFocusNode,
-                validator: (value) => value != _passwordController.text
-                    ? "Password does not match"
-                    : value?.isEmpty == true
-                        ? "Required"
-                        : null,
-              ),
-              const SizedBox(
-                height: 24,
-              ),
-              ElevatedButton(
-                onPressed: () async {
-                  if (formKey.currentState?.validate() != true) return;
-                  final signUpCommand = SignUpCommand(
-                    email: _emailController.text,
-                    name: _userNameController.text,
-                    password: _passwordController.text,
+                  ),
+                );
+
+                if (!isSuccess) {
+                  if (!context.mounted) return;
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      duration: Durations.long1,
+                      content: Text("Register failed!"),
+                    ),
                   );
-                  final isSuccess =
-                      await authProvider.signUpwithEmail(signUpCommand);
-                  if (isSuccess) {
-                    if (!context.mounted) return;
-                    Navigator.of(context)
-                        .pushNamedAndRemoveUntil('/home', (route) => false);
-                  } else {
-                    //ToDo :: Register failed
-                  }
-                },
-                child: const Text("Sign Up"),
+                } else {
+                  //ToDo :: Register failed
+                }
+              },
+              child: const Text("Sign Up"),
+            ),
+            const Padding(
+              padding: EdgeInsets.symmetric(
+                vertical: 16,
               ),
-              const Padding(
-                padding: EdgeInsets.symmetric(
-                  vertical: 16,
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Expanded(
-                      child: Divider(),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 4.0),
-                      child: Text("Or"),
-                    ),
-                    Expanded(
-                      child: Divider(),
-                    ),
-                  ],
-                ),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Expanded(
+                    child: Divider(),
+                  ),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 4.0),
+                    child: Text("Or"),
+                  ),
+                  Expanded(
+                    child: Divider(),
+                  ),
+                ],
               ),
-              OutlinedButton(
-                onPressed: () {},
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    PhosphorIcon(PhosphorIconsFill.googleLogo),
-                    SizedBox(
-                      width: 8,
-                    ),
-                    Text("Sign Up with Google")
-                  ],
-                ),
+            ),
+            OutlinedButton(
+              onPressed: () {},
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Image.asset(
+                    "assert/google.png",
+                    width: 22,
+                    height: 22,
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  const Text("Sign Up with Google")
+                ],
               ),
-              const SizedBox(
-                height: 24,
-              ),
-              Row(
+            ),
+            const SizedBox(
+              height: 24,
+            ),
+            GestureDetector(
+              onTap: () {
+                Navigator.of(context).pop();
+              },
+              child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   const Text(
@@ -179,8 +205,8 @@ class _SignUpPageState extends State<SignUpPage> {
                   )
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );

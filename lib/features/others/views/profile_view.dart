@@ -31,8 +31,7 @@ class ProfileView extends StatelessWidget {
       ),
       body: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        child: ListView(
           children: [
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -101,27 +100,26 @@ class ProfileView extends StatelessWidget {
                   title: "About",
                   onTap: () {},
                 ),
+                ProfileListTile(
+                  icon: PhosphorIconsRegular.signOut,
+                  title: "Logout",
+                  onTap: () async {
+                    try {
+                      await context.read<AuthProvider>().logout();
+                      if (!context.mounted) return;
+                      Navigator.of(context).pushNamed(
+                        RouteConfig.wrapper,
+                      );
+                    } catch (e) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text("Logout Failed!"),
+                        ),
+                      );
+                    }
+                  },
+                ),
               ],
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8),
-              child: ElevatedButton(
-                onPressed: () async {
-                  try {
-                    await context.read<AuthProvider>().logout();
-                    if (!context.mounted) return;
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        RouteConfig.wrapper, (route) => false);
-                  } catch (e) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text("Logout Failed!"),
-                      ),
-                    );
-                  }
-                },
-                child: const Text("Logout"),
-              ),
             ),
           ],
         ),

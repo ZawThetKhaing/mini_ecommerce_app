@@ -9,10 +9,13 @@ import 'package:provider/provider.dart';
 class AddressFormPage extends StatefulWidget {
   const AddressFormPage({
     super.key,
+    this.addressModel,
     this.orderModel,
     this.isFromOrderDetail = false,
   });
   final OrderModel? orderModel;
+
+  final AddressModel? addressModel;
   final bool isFromOrderDetail;
 
   @override
@@ -37,11 +40,10 @@ class _AddressFormPageState extends State<AddressFormPage> {
   @override
   void initState() {
     provider = context.read<PaymentProvider>();
-    _nameController.text = widget.orderModel?.address.fullName ?? "";
-    _phoneController.text = widget.orderModel?.address.phoneNumber ?? "";
-    _addressController.text = widget.orderModel?.address.address ?? "";
-    _additionalInfoController.text =
-        widget.orderModel?.address.additionalInfo ?? "";
+    _nameController.text = widget.addressModel?.fullName ?? "";
+    _phoneController.text = widget.addressModel?.phoneNumber ?? "";
+    _addressController.text = widget.addressModel?.address ?? "";
+    _additionalInfoController.text = widget.addressModel?.additionalInfo ?? "";
 
     super.initState();
   }
@@ -117,9 +119,7 @@ class _AddressFormPageState extends State<AddressFormPage> {
                     if (fromKey.currentState?.validate() != true) return;
                     if (widget.isFromOrderDetail) {
                       final updatedModel = widget.orderModel?.copyWith(
-                        addressModel:
-                            (widget.orderModel!.address as AddressModel)
-                                .copyWith(
+                        address: (widget.addressModel!).copyWith(
                           fullName: _nameController.text,
                           phoneNumber: _phoneController.text,
                           address: _addressController.text,

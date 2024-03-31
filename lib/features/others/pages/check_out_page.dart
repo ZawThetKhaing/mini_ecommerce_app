@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:mini_ecommerce_app_assignment/core/routes/route_config.dart';
-import 'package:mini_ecommerce_app_assignment/features/auth/presentation/provider/auth_provider.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/widgets/add_address_widget.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/widgets/cart_item_list_tile.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/widgets/total_bottom_bar.dart';
 import 'package:mini_ecommerce_app_assignment/features/payment/presentation/providers/payment_provider.dart';
 import 'package:mini_ecommerce_app_assignment/features/product/presentation/providers/product_provider.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 class CheckOutPage extends StatefulWidget {

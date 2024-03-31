@@ -60,4 +60,8 @@ class AuthRepositoryImpl implements AuthRepository {
       (r) => const Right(null),
     );
   }
+
+  @override
+  ResultFuture<UserEntity> signUpOrLoginWithGoogle() =>
+      authRemoteDataSource.googleLogin();
 }

@@ -59,13 +59,15 @@ class ProductEntityAdapter extends TypeAdapter<ProductEntity> {
       image: fields[5] as String,
       rate: fields[6] as String,
       count: fields[7] as String,
+      qty: fields[8] as int?,
+      createdAt: fields[9] as DateTime?,
     );
   }
 
   @override
   void write(BinaryWriter writer, ProductEntity obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -81,7 +83,11 @@ class ProductEntityAdapter extends TypeAdapter<ProductEntity> {
       ..writeByte(6)
       ..write(obj.rate)
       ..writeByte(7)
-      ..write(obj.count);
+      ..write(obj.count)
+      ..writeByte(8)
+      ..write(obj.qty)
+      ..writeByte(9)
+      ..write(obj.createdAt);
   }
 
   @override

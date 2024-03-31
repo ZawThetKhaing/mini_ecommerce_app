@@ -5,6 +5,7 @@ import 'package:mini_ecommerce_app_assignment/core/services/local_notification_c
 
 class LocalNotification {
   final AwesomeNotifications awesomeNotifications = AwesomeNotifications();
+
   Future<void> initLocalNotification() async {
     await awesomeNotifications.initialize("resource://mipmap/ic_launcher", [
       NotificationChannel(
@@ -12,11 +13,14 @@ class LocalNotification {
         channelKey: 'basic channel',
         channelName: 'Basic Notification',
         channelDescription: 'basic notifications channel',
+        importance: NotificationImportance.High,
+        channelShowBadge: true,
       ),
     ], channelGroups: [
       NotificationChannelGroup(
-          channelGroupKey: "basic_channel_group",
-          channelGroupName: "Basic Group")
+        channelGroupKey: "basic_channel_group",
+        channelGroupName: "Basic Group",
+      )
     ]);
     final noti = await AwesomeNotifications().isNotificationAllowed();
 

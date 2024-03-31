@@ -24,4 +24,8 @@ class OrderRepositoryImpl implements OrderRepository {
   @override
   ResultVoid updateOrder(SetOrderParams entity) =>
       orderRemoteDataSource.updateOrder(entity);
+
+  @override
+  ResultFuture<Stream<OrderListEntity>> getOrderStream(String uid) =>
+      orderRemoteDataSource.getOrderStream(uid);
 }

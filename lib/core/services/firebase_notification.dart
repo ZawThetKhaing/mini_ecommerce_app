@@ -16,8 +16,6 @@ class FireBaseNotification {
       provisional: false,
       sound: true,
     );
-    print(await messaging.getToken());
-
     await messaging.setForegroundNotificationPresentationOptions(
       alert: true,
       badge: true,

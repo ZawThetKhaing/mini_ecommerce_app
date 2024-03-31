@@ -1,7 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mini_ecommerce_app_assignment/core/routes/route_config.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/presentation/provider/auth_provider.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/widgets/add_address_widget.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/widgets/total_bottom_bar.dart';
@@ -49,14 +48,17 @@ class OrderDetailsPage extends StatelessWidget {
                               isUpdate: false,
                               orderModel: orderModel,
                             )
-                            .whenComplete(() {
-                          Navigator.of(context).pop();
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              content: Text("Deleted"),
-                            ),
-                          );
-                        });
+                            .whenComplete(
+                          () {
+                            Navigator.of(context).pop();
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text("Deleted"),
+                              ),
+                            );
+                            Navigator.of(context).pop();
+                          },
+                        );
                       },
                       child: const Text("Ok"),
                     )
@@ -77,10 +79,6 @@ class OrderDetailsPage extends StatelessWidget {
                 .textTheme
                 .bodyLarge
                 ?.copyWith(fontWeight: FontWeight.w600),
-          ),
-          AddAddressWidget(
-            isOrderDetails: true,
-            orderModel: orderModel,
           ),
           const SizedBox(
             height: 8,
@@ -103,6 +101,7 @@ class OrderDetailsPage extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
                       Container(
+                        margin: const EdgeInsets.only(bottom: 8),
                         padding: const EdgeInsets.all(2),
                         decoration: BoxDecoration(
                           border: Border.all(
@@ -128,7 +127,7 @@ class OrderDetailsPage extends StatelessWidget {
                               style: Theme.of(context).textTheme.titleSmall,
                             ),
                             Text(
-                              "Qty:x 1",
+                              "${product.qty} x quantity",
                               style: Theme.of(context).textTheme.bodyMedium,
                             ),
                             const SizedBox(
@@ -145,8 +144,9 @@ class OrderDetailsPage extends StatelessWidget {
           const SizedBox(
             height: 16,
           ),
-          const TotalBottomBar(
+          TotalBottomBar(
             isOrderDetails: true,
+            orderModel: orderModel,
           ),
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8.0),
@@ -154,6 +154,10 @@ class OrderDetailsPage extends StatelessWidget {
           ),
           const SizedBox(
             height: 8,
+          ),
+          AddAddressWidget(
+            isOrderDetails: true,
+            orderModel: orderModel,
           ),
           Text(
             orderModel.isCashOnDelivery

@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:mini_ecommerce_app_assignment/core/routes/route_config.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/widgets/notification_icon.dart';
 import 'package:mini_ecommerce_app_assignment/features/product/presentation/providers/product_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -56,72 +57,147 @@ class WishListView extends StatelessWidget {
                       return ListView.builder(
                           itemCount: wishListItems.length,
                           itemBuilder: (context, index) {
-                            return Container(
-                              width: 110,
-                              height: 150,
-                              margin: const EdgeInsets.symmetric(vertical: 4),
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    width: 110,
-                                    height: 140,
-                                    padding: const EdgeInsets.all(4),
-                                    child: CachedNetworkImage(
-                                      imageUrl: wishListItems[index].image,
-                                      fit: BoxFit.contain,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    width: 8,
-                                  ),
-                                  Expanded(
-                                    child: Padding(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 8.0,
+                            return GestureDetector(
+                              onTap: () {
+                                Navigator.of(context).pushNamed(
+                                    RouteConfig.details,
+                                    arguments: wishListItems[index]);
+                              },
+                              child: Container(
+                                width: 110,
+                                height: 150,
+                                margin: const EdgeInsets.symmetric(vertical: 4),
+                                child: Row(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: 110,
+                                      height: 140,
+                                      padding: const EdgeInsets.all(4),
+                                      child: CachedNetworkImage(
+                                        imageUrl: wishListItems[index].image,
+                                        fit: BoxFit.contain,
                                       ),
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
-                                            crossAxisAlignment:
-                                                CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.only(
-                                                    right: 12.0),
-                                                child: Row(
-                                                  crossAxisAlignment:
-                                                      CrossAxisAlignment.start,
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
-                                                  children: [
-                                                    SizedBox(
-                                                      width: 220,
-                                                      child: Text(
-                                                        wishListItems[index]
-                                                            .title,
-                                                        style: Theme.of(context)
-                                                            .textTheme
-                                                            .bodyLarge
-                                                            ?.copyWith(
-                                                              fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
-                                                            ),
+                                    ),
+                                    const SizedBox(
+                                      width: 8,
+                                    ),
+                                    Expanded(
+                                      child: Padding(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 8.0,
+                                        ),
+                                        child: Column(
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                          mainAxisAlignment:
+                                              MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          right: 12.0),
+                                                  child: Row(
+                                                    crossAxisAlignment:
+                                                        CrossAxisAlignment
+                                                            .start,
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
+                                                    children: [
+                                                      SizedBox(
+                                                        width: 220,
+                                                        child: Text(
+                                                          wishListItems[index]
+                                                              .title,
+                                                          style:
+                                                              Theme.of(context)
+                                                                  .textTheme
+                                                                  .bodyLarge
+                                                                  ?.copyWith(
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                  ),
+                                                        ),
                                                       ),
-                                                    ),
-                                                    GestureDetector(
-                                                      onTap: () {
+                                                      GestureDetector(
+                                                        onTap: () {
+                                                          provider
+                                                              .deleteWishListItem(
+                                                                wishListItems[
+                                                                    index],
+                                                              )
+                                                              .whenComplete(
+                                                                () => ScaffoldMessenger.of(
+                                                                        context)
+                                                                    .showSnackBar(
+                                                                  const SnackBar(
+                                                                    duration:
+                                                                        Durations
+                                                                            .medium2,
+                                                                    content: Text(
+                                                                        "Remove from wish list!"),
+                                                                  ),
+                                                                ),
+                                                              );
+                                                        },
+                                                        child:
+                                                            const PhosphorIcon(
+                                                          PhosphorIconsFill
+                                                              .heart,
+                                                          color: Colors.red,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                                Text(
+                                                  "${wishListItems[index].count} item(s) left",
+                                                  style: Theme.of(context)
+                                                      .textTheme
+                                                      .bodyMedium,
+                                                ),
+                                              ],
+                                            ),
+                                            Padding(
+                                              padding: const EdgeInsets.only(
+                                                  right: 12.0),
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    "\$ ${wishListItems[index].price}",
+                                                    style: Theme.of(context)
+                                                        .textTheme
+                                                        .bodyLarge
+                                                        ?.copyWith(
+                                                          fontWeight:
+                                                              FontWeight.w600,
+                                                        ),
+                                                  ),
+                                                  SizedBox(
+                                                    width: 90,
+                                                    height: 40,
+                                                    child: ElevatedButton(
+                                                      style: ButtonStyle(
+                                                        padding:
+                                                            MaterialStateProperty
+                                                                .all(
+                                                          EdgeInsets.zero,
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
                                                         provider
-                                                            .deleteWishListItem(
-                                                              wishListItems[
-                                                                  index],
-                                                            )
+                                                            .addToCart(
+                                                                wishListItems[
+                                                                    index])
                                                             .whenComplete(
                                                               () => ScaffoldMessenger
                                                                       .of(context)
@@ -131,87 +207,24 @@ class WishListView extends StatelessWidget {
                                                                       Durations
                                                                           .medium2,
                                                                   content: Text(
-                                                                      "Remove from wish list!"),
+                                                                      "Add to cart successfully!"),
                                                                 ),
                                                               ),
                                                             );
                                                       },
-                                                      child: const PhosphorIcon(
-                                                        PhosphorIconsFill.heart,
-                                                        color: Colors.red,
-                                                      ),
+                                                      child: const Text(
+                                                          "Add to cart"),
                                                     ),
-                                                  ],
-                                                ),
+                                                  )
+                                                ],
                                               ),
-                                              Text(
-                                                "${wishListItems[index].count} item(s) left",
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .bodyMedium,
-                                              ),
-                                            ],
-                                          ),
-                                          Padding(
-                                            padding: const EdgeInsets.only(
-                                                right: 12.0),
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  "\$ ${wishListItems[index].price}",
-                                                  style: Theme.of(context)
-                                                      .textTheme
-                                                      .bodyLarge
-                                                      ?.copyWith(
-                                                        fontWeight:
-                                                            FontWeight.w600,
-                                                      ),
-                                                ),
-                                                SizedBox(
-                                                  width: 90,
-                                                  height: 40,
-                                                  child: ElevatedButton(
-                                                    style: ButtonStyle(
-                                                      padding:
-                                                          MaterialStateProperty
-                                                              .all(
-                                                        EdgeInsets.zero,
-                                                      ),
-                                                    ),
-                                                    onPressed: () {
-                                                      provider
-                                                          .addToCart(
-                                                              wishListItems[
-                                                                  index])
-                                                          .whenComplete(
-                                                            () => ScaffoldMessenger
-                                                                    .of(context)
-                                                                .showSnackBar(
-                                                              const SnackBar(
-                                                                duration:
-                                                                    Durations
-                                                                        .medium2,
-                                                                content: Text(
-                                                                    "Add to cart successfully!"),
-                                                              ),
-                                                            ),
-                                                          );
-                                                    },
-                                                    child: const Text(
-                                                        "Add to cart"),
-                                                  ),
-                                                )
-                                              ],
                                             ),
-                                          ),
-                                        ],
+                                          ],
+                                        ),
                                       ),
                                     ),
-                                  ),
-                                ],
+                                  ],
+                                ),
                               ),
                             );
                           });

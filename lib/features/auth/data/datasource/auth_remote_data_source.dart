@@ -1,5 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:firebase_auth/firebase_auth.dart' as firebase_auth;
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:mini_ecommerce_app_assignment/core/command/login_command.dart';
 import 'package:mini_ecommerce_app_assignment/core/command/sign_up_command.dart';
 import 'package:mini_ecommerce_app_assignment/core/error/faliure.dart';
@@ -13,6 +15,7 @@ abstract class AuthRemoteDataSource {
 
   ResultFuture<UserModel> login(LoginCommand loginCommand);
 
+  ResultFuture<UserModel> googleLogin();
   ResultVoid logout();
 }
 
@@ -48,7 +51,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         return Right(UserModel.fromFirebase(userCredential.user!));
       }
     } catch (e) {
-      throw Exception("Sign up failed $e");
+      return const Left(ServerFailure("Sign up failed!"));
     }
   }
 
@@ -68,7 +71,7 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
         );
       }
     } catch (e) {
-      throw Exception("Login failed $e");
+      return const Left(ServerFailure("Sign In Failed!"));
     }
   }
 
@@ -78,6 +81,34 @@ class AuthRemoteDataSourceImpl implements AuthRemoteDataSource {
       return Right(await _firebaseAuth.signOut());
     } catch (e) {
       return const Left(ServerFailure("Logout failed!"));
+    }
+  }
+
+  @override
+  ResultFuture<UserModel> googleLogin() async {
+    try {
+      // Trigger the authentication flow
+      final GoogleSignInAccount? googleUser = await GoogleSignIn().signIn();
+
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth =
+          await googleUser?.authentication;
+
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      // Once signed in, return the UserCredential
+      final user = await FirebaseAuth.instance.signInWithCredential(credential);
+      if (user.user != null) {
+        return Right(UserModel.fromFirebase(user.user!));
+      } else {
+        return const Left(ServerFailure("Google login failed!"));
+      }
+    } on Exception catch (e) {
+      return const Left(ServerFailure("Google login failed!"));
     }
   }
 }

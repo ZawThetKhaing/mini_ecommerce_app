@@ -3,7 +3,6 @@ import 'package:mini_ecommerce_app_assignment/core/command/login_command.dart';
 import 'package:mini_ecommerce_app_assignment/core/routes/route_config.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/presentation/provider/auth_provider.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/presentation/widgets/auth_text_field.dart';
-import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
 class LoginPage extends StatefulWidget {
@@ -74,6 +73,41 @@ class _LoginPageState extends State<LoginPage> {
                 focusNode: _passwordFocusNode,
                 validator: (value) =>
                     value == null || value.isEmpty ? "Required" : null,
+                onEditingComplete: () {
+                  () async {
+                    if (formKey.currentState?.validate() != true) return;
+                    final loginCommand = LoginCommand(
+                      email: _emailController.text,
+                      password: _passwordController.text,
+                    );
+                    final isSuccess =
+                        await authProvider.loginWithEmail(loginCommand);
+                    if (!context.mounted) return;
+
+                    if (isSuccess) {
+                      Navigator.of(context).pushNamed(
+                        RouteConfig.wrapper,
+                      );
+                    } else {
+                      showDialog(
+                        context: context,
+                        builder: (_) => AlertDialog(
+                          title: const Text(
+                            "Login Failed!",
+                          ),
+                          content:
+                              const Text("User name or password is incorrect"),
+                          actions: [
+                            ElevatedButton(
+                              onPressed: Navigator.of(context).pop,
+                              child: const Text("Ok"),
+                            )
+                          ],
+                        ),
+                      );
+                    }
+                  };
+                },
               ),
               const SizedBox(
                 height: 24,
@@ -87,12 +121,29 @@ class _LoginPageState extends State<LoginPage> {
                   );
                   final isSuccess =
                       await authProvider.loginWithEmail(loginCommand);
+                  if (!context.mounted) return;
+
                   if (isSuccess) {
-                    if (!context.mounted) return;
-                    Navigator.of(context).pushNamedAndRemoveUntil(
-                        RouteConfig.home, (route) => false);
+                    Navigator.of(context).pushNamed(
+                      RouteConfig.wrapper,
+                    );
                   } else {
-                    //ToDo :: Login Failed
+                    showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: const Text(
+                          "Login Failed!",
+                        ),
+                        content:
+                            const Text("User name or password is incorrect"),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: Navigator.of(context).pop,
+                            child: const Text("Ok"),
+                          )
+                        ],
+                      ),
+                    );
                   }
                 },
                 child: const Text("Login"),
@@ -118,35 +169,70 @@ class _LoginPageState extends State<LoginPage> {
                 ),
               ),
               OutlinedButton(
-                onPressed: () {},
-                child: const Row(
+                onPressed: () async {
+                  final isSuccess = await authProvider.googleLogin();
+
+                  if (!context.mounted) return;
+
+                  if (isSuccess) {
+                    Navigator.of(context).pushNamed(
+                      RouteConfig.wrapper,
+                    );
+                  } else {
+                    showDialog(
+                      context: context,
+                      builder: (_) => AlertDialog(
+                        title: const Text(
+                          "Login Failed!",
+                        ),
+                        content: const Text("Invalid"),
+                        actions: [
+                          ElevatedButton(
+                            onPressed: Navigator.of(context).pop,
+                            child: const Text("Ok"),
+                          )
+                        ],
+                      ),
+                    );
+                  }
+                },
+                child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    PhosphorIcon(PhosphorIconsFill.googleLogo),
-                    SizedBox(
+                    Image.asset(
+                      "assert/google.png",
+                      width: 22,
+                      height: 22,
+                    ),
+                    const SizedBox(
                       width: 8,
                     ),
-                    Text("Sign Up with Google")
+                    const Text("Sign Up with Google")
                   ],
                 ),
               ),
               const SizedBox(
                 height: 24,
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  const Text(
-                    "Create a new account.",
-                  ),
-                  Text(
-                    "Sign Up",
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                          color: Colors.black,
-                        ),
-                  )
-                ],
+              GestureDetector(
+                onTap: () {
+                  Navigator.of(context).pushNamed(RouteConfig.signUp);
+                },
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    const Text(
+                      "Create a new account.",
+                    ),
+                    Text(
+                      "Sign Up",
+                      style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                            fontWeight: FontWeight.w600,
+                            color: Colors.black,
+                          ),
+                    )
+                  ],
+                ),
               ),
             ],
           ),

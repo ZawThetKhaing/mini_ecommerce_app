@@ -32,10 +32,9 @@ class ProductRemoteDataSourceImpl implements ProductRemoteDataSource {
         return Left(DatabaseFailure(response.statusCode.toString()));
       }
     } catch (e) {
-      print(e.toString());
-      return Left(
+      return const Left(
         ServerFailure(
-          e.toString(),
+          "No data",
         ),
       );
     }

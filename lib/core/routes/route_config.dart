@@ -76,7 +76,7 @@ class RouteConfig {
       case addressForm:
         return MaterialPageRoute(
           builder: (_) => AddressFormPage(
-            orderModel: settings.arguments as OrderModel?,
+            addressModel: settings.arguments as AddressModel?,
             isFromOrderDetail: false,
           ),
         );

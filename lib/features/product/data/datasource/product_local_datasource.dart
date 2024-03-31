@@ -12,6 +12,8 @@ abstract class ProductLocalDataSource {
 
   ResultVoid addToCart(ProductEntity entity);
 
+  ResultVoid updateCartItem(ProductEntity entity);
+
   ResultFuture<List<ProductEntity?>> getCartList();
 
   ResultVoid deleteCartItem(ProductEntity entity);
@@ -70,6 +72,10 @@ class ProductLocalDataSourceImpl implements ProductLocalDataSource {
   @override
   ResultFuture<List<ProductEntity?>> getWishList() async =>
       getFromDb(Boxes.kWishList);
+
+  @override
+  ResultVoid updateCartItem(ProductEntity entity) =>
+      addToDb(Boxes.kCartItems, entity);
 
   @override
   ResultVoid deleteWishList(ProductEntity entity) async =>

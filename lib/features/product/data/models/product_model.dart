@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart' as firestore;
 import 'package:mini_ecommerce_app_assignment/features/product/domain/entities/product_entity.dart';
 
 class ProductResponseModel extends ProductResponseEntity {
@@ -22,6 +23,8 @@ class ProductModel extends ProductEntity {
     required super.image,
     required super.rate,
     required super.count,
+    super.qty,
+    super.createdAt,
   });
 
   factory ProductModel.fromJson(Map<String, dynamic> json) => ProductModel(
@@ -33,6 +36,10 @@ class ProductModel extends ProductEntity {
         image: json['image'],
         rate: (json['rating']['rate']).toString(),
         count: (json['rating']['count']).toString(),
+        qty: json['qty'] ?? 1,
+        createdAt: json['created_at'] == null
+            ? null
+            : (json['created_at'] as firestore.Timestamp).toDate(),
       );
 
   factory ProductModel.fromEntity(ProductEntity entity) => ProductModel(
@@ -44,6 +51,8 @@ class ProductModel extends ProductEntity {
         image: entity.image,
         rate: entity.rate,
         count: entity.count,
+        qty: entity.qty,
+        createdAt: entity.createdAt,
       );
 
   ProductEntity toEntity() => ProductEntity(
@@ -55,6 +64,8 @@ class ProductModel extends ProductEntity {
         image: image,
         rate: rate,
         count: count,
+        qty: qty,
+        createdAt: createdAt,
       );
 
   Map<String, dynamic> toJson() => {
@@ -68,5 +79,32 @@ class ProductModel extends ProductEntity {
           'rate': rate,
           'count': count,
         },
+        'qty': qty,
+        'created_at': createdAt,
       };
+
+  ProductModel copyWith({
+    String? id,
+    String? title,
+    String? price,
+    String? description,
+    String? category,
+    String? image,
+    String? rate,
+    String? count,
+    int? qty,
+    DateTime? createdAt,
+  }) =>
+      ProductModel(
+        id: id ?? this.id,
+        title: title ?? this.title,
+        price: price ?? this.price,
+        description: description ?? this.description,
+        category: category ?? this.category,
+        image: image ?? this.image,
+        rate: rate ?? this.rate,
+        count: count ?? this.count,
+        qty: qty ?? this.qty,
+        createdAt: createdAt ?? this.createdAt,
+      );
 }

@@ -17,6 +17,7 @@ class CartItemListView extends StatelessWidget {
       child: ListView.builder(
         itemCount: cartItems.length,
         itemBuilder: (_, index) {
+          cartItems.sort((a, b) => a!.createdAt!.compareTo(b!.createdAt!));
           return CartItemListTile(product: cartItems[index]!);
         },
       ),

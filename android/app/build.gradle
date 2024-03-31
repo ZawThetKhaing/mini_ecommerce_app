@@ -24,7 +24,7 @@ if (flutterVersionName == null) {
 
 android {
     namespace "com.example.mini_ecommerce_app_assignment"
-    compileSdk flutter.compileSdkVersion
+    compileSdk 34
     ndkVersion flutter.ndkVersion
     
 
@@ -67,4 +67,5 @@ flutter {
 }
 
 dependencies {
+  
 }

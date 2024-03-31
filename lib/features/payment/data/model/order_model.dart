@@ -57,7 +57,7 @@ class OrderModel extends OrderEntity {
 
   OrderModel copyWith({
     String? orderId,
-    AddressModel? addressModel,
+    AddressModel? address,
     PaymentMethodModel? paymentMethod,
     PurchaseTotalModel? purchaseTotal,
     List<ProductModel>? cartItems,
@@ -68,14 +68,15 @@ class OrderModel extends OrderEntity {
     bool? isCashOnDelivery,
   }) =>
       OrderModel(
-          orderId: orderId ?? this.orderId,
-          address: addressModel ?? address,
-          paymentMethod: paymentMethod ?? this.paymentMethod,
-          purchaseTotal: purchaseTotal ?? this.purchaseTotal,
-          cartItems: cartItems ?? this.cartItems,
-          createdAt: createdAt ?? this.createdAt,
-          updatedAt: updatedAt ?? this.updatedAt,
-          arrivialTime: arrivialTime ?? this.arrivialTime,
-          isDelivered: isDelivered ?? this.isDelivered,
-          isCashOnDelivery: isCashOnDelivery ?? this.isCashOnDelivery);
+        orderId: orderId ?? this.orderId,
+        address: address ?? this.address,
+        paymentMethod: paymentMethod ?? this.paymentMethod,
+        purchaseTotal: purchaseTotal ?? this.purchaseTotal,
+        cartItems: cartItems ?? this.cartItems,
+        createdAt: createdAt ?? this.createdAt,
+        updatedAt: updatedAt ?? this.updatedAt,
+        arrivialTime: arrivialTime ?? this.arrivialTime,
+        isDelivered: isDelivered ?? this.isDelivered,
+        isCashOnDelivery: isCashOnDelivery ?? this.isCashOnDelivery,
+      );
 }

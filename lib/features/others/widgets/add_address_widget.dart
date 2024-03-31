@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:mini_ecommerce_app_assignment/core/routes/route_config.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/presentation/provider/auth_provider.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/pages/address_form_page.dart';
+import 'package:mini_ecommerce_app_assignment/features/payment/data/model/address_model.dart';
 import 'package:mini_ecommerce_app_assignment/features/payment/data/model/order_model.dart';
 import 'package:mini_ecommerce_app_assignment/features/payment/presentation/providers/payment_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
@@ -40,6 +41,7 @@ class AddAddressWidget extends StatelessWidget {
                           builder: (_) => AddressFormPage(
                             isFromOrderDetail: isOrderDetails,
                             orderModel: orderModel,
+                            addressModel: orderModel?.address as AddressModel,
                           ),
                         ),
                       );
@@ -66,6 +68,7 @@ class AddAddressWidget extends StatelessWidget {
             if (provider.addressModel != null || orderModel != null) {
               final model =
                   isOrderDetails ? orderModel?.address : provider.addressModel;
+
               return GestureDetector(
                 onTap: isOrderDetails
                     ? null
@@ -91,36 +94,43 @@ class AddAddressWidget extends StatelessWidget {
                         "Name : ${model?.fullName}",
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
-                      const Divider(),
-                      Text(
-                        "Phone number : ${model?.phoneNumber}",
-                        style: Theme.of(context).textTheme.titleSmall,
-                      ),
+                      isOrderDetails ? const SizedBox() : const Divider(),
+                      isOrderDetails
+                          ? const SizedBox()
+                          : Text(
+                              "Phone number : ${model?.phoneNumber}",
+                              style: Theme.of(context).textTheme.titleSmall,
+                            ),
                       const Divider(),
                       Text(
                         "Address: ${model?.address}",
                         style: Theme.of(context).textTheme.titleSmall,
                       ),
-                      model?.additionalInfo != null
-                          ? SizedBox(
-                              height: 100,
-                              child: Column(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  const Divider(),
-                                  Text(
-                                    "Additional Info: ${model?.additionalInfo}",
-                                    style:
-                                        Theme.of(context).textTheme.titleSmall,
-                                    overflow: TextOverflow.ellipsis,
-                                    maxLines: 3,
+                      const Divider(),
+                      isOrderDetails
+                          ? const SizedBox()
+                          : model?.additionalInfo != null ||
+                                  model!.additionalInfo == ''
+                              ? SizedBox(
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        "Additional Info: ${model?.additionalInfo}",
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleSmall,
+                                        overflow: TextOverflow.ellipsis,
+                                        maxLines: 3,
+                                      ),
+                                      const Divider(),
+                                    ],
                                   ),
-                                  const Divider(),
-                                ],
-                              ),
-                            )
-                          : const SizedBox(),
+                                )
+                              : const SizedBox(),
                       model?.additionalInfo == null
                           ? const Divider()
                           : const SizedBox(),

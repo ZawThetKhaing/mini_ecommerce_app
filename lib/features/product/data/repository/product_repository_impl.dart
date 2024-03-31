@@ -40,4 +40,8 @@ class ProductsRepositoryImpl implements ProductRepository {
   @override
   ResultFuture<List<ProductEntity?>> getWishList() =>
       productLocalDataSource.getWishList();
+
+  @override
+  ResultVoid updateCartItem(ProductEntity entity) =>
+      productLocalDataSource.updateCartItem(entity);
 }

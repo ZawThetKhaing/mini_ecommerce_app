@@ -25,6 +25,8 @@ class ProductEntity extends Equatable {
     required this.image,
     required this.rate,
     required this.count,
+    this.qty,
+    this.createdAt,
   });
   @HiveField(0)
   final String id;
@@ -50,15 +52,14 @@ class ProductEntity extends Equatable {
   @HiveField(7)
   final String count;
 
+  @HiveField(8)
+  final int? qty;
+
+  @HiveField(9)
+  final DateTime? createdAt;
+
   @override
   List<Object?> get props => [
         id,
-        title,
-        price,
-        description,
-        category,
-        image,
-        rate,
-        count,
       ];
 }

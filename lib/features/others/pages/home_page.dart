@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mini_ecommerce_app_assignment/features/auth/presentation/provider/auth_provider.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/providers/home_nav_provider.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/views/cart_view.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/views/home_view.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/views/profile_view.dart';
 import 'package:mini_ecommerce_app_assignment/features/others/views/wish_list_view.dart';
+import 'package:mini_ecommerce_app_assignment/features/payment/presentation/providers/payment_provider.dart';
 import 'package:phosphor_flutter/phosphor_flutter.dart';
 import 'package:provider/provider.dart';
 
@@ -14,8 +16,21 @@ List<Widget> _views = [
   const ProfileView(),
 ];
 
-class HomePage extends StatelessWidget {
+class HomePage extends StatefulWidget {
   const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  @override
+  void initState() {
+    context
+        .read<PaymentProvider>()
+        .watchOrder(context.read<AuthProvider>().user?.id ?? '');
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {

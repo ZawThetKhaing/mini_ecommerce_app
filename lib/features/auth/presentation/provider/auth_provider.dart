@@ -8,6 +8,7 @@ import 'package:mini_ecommerce_app_assignment/core/error/faliure.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/data/model/user_model.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/domain/entities/user_entity.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/domain/usecases/auth_user_usecase.dart';
+import 'package:mini_ecommerce_app_assignment/features/auth/domain/usecases/google_login_usecase.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/domain/usecases/login_usecase.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/domain/usecases/logout_usecase.dart';
 import 'package:mini_ecommerce_app_assignment/features/auth/domain/usecases/sign_up_usecase.dart';
@@ -25,6 +26,7 @@ class AuthProvider extends ChangeNotifier {
     required this.signUpUsecase,
     required this.authUserUsecase,
     required this.logoutUsecase,
+    required this.googleLoginUsecase,
   }) {
     _authSubScription = authUserUsecase().listen(
       (event) {
@@ -40,6 +42,7 @@ class AuthProvider extends ChangeNotifier {
   final SignUpUsecase signUpUsecase;
   final AuthUserUsecase authUserUsecase;
   final LogoutUsecase logoutUsecase;
+  final GoogleLoginUsecase googleLoginUsecase;
 
   late final StreamSubscription _authSubScription;
 
@@ -56,6 +59,12 @@ class AuthProvider extends ChangeNotifier {
 
   Future<bool> signUpwithEmail(SignUpCommand signUpCommand) =>
       loginOrSignUp(signUpCommand: signUpCommand);
+
+  Future<bool> googleLogin() async {
+    final result = await googleLoginUsecase();
+
+    return result.fold((l) => false, (r) => true);
+  }
 
   Future<bool> loginOrSignUp(
       {LoginCommand? loginCommand, SignUpCommand? signUpCommand}) async {

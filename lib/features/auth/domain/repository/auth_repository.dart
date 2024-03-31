@@ -6,6 +6,8 @@ import 'package:mini_ecommerce_app_assignment/features/auth/domain/entities/user
 abstract class AuthRepository {
   ResultFuture<UserEntity> signUp(SignUpCommand signUpCommand);
   ResultFuture<UserEntity> login(LoginCommand loginCommand);
+  ResultFuture<UserEntity> signUpOrLoginWithGoogle();
+
   ResultVoid logout();
   Stream<UserEntity> get authUser;
 }

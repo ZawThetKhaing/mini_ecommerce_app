@@ -8,11 +8,14 @@ class OrderListModel extends OrderListEntity {
 
   factory OrderListModel.fromJson(Map<String, dynamic> json, String id) =>
       OrderListModel(
-          orderList: (json['order_list'] as List<dynamic>).map(
-        (e) {
-          return OrderModel.fromJson(e as Map<String, dynamic>);
-        },
-      ).toList());
+        orderList: json['order_list'] == null
+            ? <OrderModel>[]
+            : (json['order_list'] as List<dynamic>).map(
+                (e) {
+                  return OrderModel.fromJson(e as Map<String, dynamic>);
+                },
+              ).toList(),
+      );
 
   Map<String, dynamic> toJson([String? id]) => {
         'order_list': orderList.map(
